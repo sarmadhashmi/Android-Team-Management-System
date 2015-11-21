@@ -1,5 +1,6 @@
 package com.sarmad.uni.seg3102final;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
 
-
+    public ProgressDialog progress;
     ImageButton imgButton;
 
     @Override
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        progress = new ProgressDialog(this);
         imgButton =(ImageButton)findViewById(R.id.imageButton);
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,15 +57,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void displayError() {
+        Toast.makeText(getApplicationContext(), "Invalid User Or Password", Toast.LENGTH_LONG).show();
+    }
+
+    public void dismiss() {
+        progress.dismiss();
+    }
+
     public void login(View view) {
         EditText username = (EditText) findViewById(R.id.username);
         EditText password = (EditText) findViewById(R.id.password);
         String[] params = {username.getText().toString(), password.getText().toString()};
-        new LoginTask(this).execute(params);
 
+        progress.setTitle("logging in");
+        progress.setMessage("Wait while loading...");
+        progress.show();
+        new LoginTask(this).execute(params);
+    }
+
+    public void loadOperations() {
         Intent intent = new Intent(this, StudentOperations.class);
         startActivity(intent);
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

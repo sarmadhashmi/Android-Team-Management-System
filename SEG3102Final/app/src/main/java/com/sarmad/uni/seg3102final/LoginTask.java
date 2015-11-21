@@ -3,6 +3,7 @@ package com.sarmad.uni.seg3102final;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -32,7 +33,7 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             credentials.put("username", username);
             credentials.put("password", password);
 
-            URL url = new URL("http://192.168.0.107:3001/auth");
+            URL url = new URL("http://192.168.0.103:3001/auth");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
@@ -64,10 +65,15 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
+
+        ((MainActivity) activity).dismiss();
+
         try {
             TextView status = (TextView) activity.findViewById(R.id.register_status);
-            status.setText(response.getString("message"));
+            status.setText(response.getString("access_token"));
+            ((MainActivity) activity).loadOperations();
         } catch (JSONException e) {
+            ((MainActivity) activity).displayError();
             e.printStackTrace();
         }
     }
