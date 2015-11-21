@@ -1,5 +1,6 @@
 package restAPI;
 
+import android.app.AlertDialog;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -27,12 +28,12 @@ public class WebServiceApis {
      *
      * @param params
      */
-    public String test(RequestParams params){
+    public String test(RequestParams params, String Req){
 
         // Make RESTful webservice call using AsyncHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://192.168.2.14:43594/test",params ,new AsyncHttpResponseHandler() {
-        //client.get("https://www.google.ca/",params ,new AsyncHttpResponseHandler() {
+        client.get("http://192.168.0.107:3001/"+Req ,params ,new AsyncHttpResponseHandler() {
+
 
             // When the response returned by REST has Http response code '200'
             @Override
@@ -49,7 +50,9 @@ public class WebServiceApis {
                 }catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //Log.i("++++++++++++++++++++ ", response);
+
+
+                Log.i("++++++++++++++++++++ ", response);
 
                 returnMsg = response;
             }

@@ -1,11 +1,14 @@
 package segfour.teammanagementsystemcom;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
@@ -19,12 +22,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RequestParams params = new RequestParams();
-        // Put Http parameter
-        //params.put("itemid", 1);
-        //params.put("teststring", "allitems");
-        WebServiceApis.getInstance().test(params);
-
     }
 
     @Override
@@ -35,11 +32,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selfDestruct(View view) {
-        Log.i("Button!", " SENNND");
-        String test = WebServiceApis.getInstance().test(null);
+        EditText mEdit;
+        mEdit   = (EditText)findViewById(R.id.edit_message);
+
+        RequestParams params = new RequestParams();
+    //       params.put("pram", mEdit.getText().toString());
+
+        String test = WebServiceApis.getInstance().test(params, mEdit.getText().toString());
 
         TextView tv1 = (TextView) findViewById(R.id.TextView01);
-        tv1.setText(test );
+        tv1.setText("Clicked");
+
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(test);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+
     }
 
     @Override
