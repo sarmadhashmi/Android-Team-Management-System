@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -27,16 +28,19 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
         try {
             String username = params[0];
             String password = params[1];
+            JSONObject credentials = new JSONObject();
+            credentials.put("username", username);
+            credentials.put("password", password);
+
             URL url = new URL("http://192.168.0.103:3001/register");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            String urlParameters = "username=" + username + "&password=" + password;
 
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/json");
 
-            DataOutputStream writer = new DataOutputStream(conn.getOutputStream());
-            writer.writeBytes(urlParameters);
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+            writer.write(credentials.toString());
             writer.flush();
             writer.close();
             // Get response
