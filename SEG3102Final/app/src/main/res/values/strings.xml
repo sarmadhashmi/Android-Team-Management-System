@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SEG3102Final</string>
+    <string name="action_settings">Settings</string>
+    <string name="enter_username">Username</string>
+    <string name="enter_password">Password</string>
+    <string name="user_type">What are you?</string>
+    <string name="student">Student</string>
+    <string name="instructor">Instructor</string>
+</resources>
