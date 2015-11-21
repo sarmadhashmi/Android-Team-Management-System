@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class InstructorOperationsActivity extends Activity {
+public class InstructorOperations extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.instructor_operations);
+        setContentView(R.layout.activity_instructor_operations);
         final ListView listView = (ListView) findViewById(R.id.instructer_operations);
         CustomFontAdapter adapter = new CustomFontAdapter(this, android.R.layout.simple_list_item_1, "Roboto-Light.ttf");
         adapter.add("Setup parameters");
@@ -23,10 +23,10 @@ public class InstructorOperationsActivity extends Activity {
                 Intent intent = null;
                 switch(itemClicked) {
                     case "Setup parameters":
-                        intent = new Intent(InstructorOperationsActivity.this, SetupParametersActivity.class);
+                        intent = new Intent(InstructorOperations.this, SetupParameters.class);
                         break;
                     case "Visualize student teams":
-                        intent = new Intent(InstructorOperationsActivity.this, VisualizeStudentTeamsActivity.class);
+                        intent = new Intent(InstructorOperations.this, VisualizeStudentTeams.class);
                 }
                 startActivity(intent);
             }

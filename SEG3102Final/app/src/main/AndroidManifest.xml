@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InstructorOperationsActivity"
+            android:name=".InstructorOperations"
             android:label="@string/title_activity_instructor_operations"/>
         <activity
-            android:name=".SetupParametersActivity"
+            android:name=".SetupParameters"
             android:label="@string/title_activity_setup_parameters"/>
         <activity
-            android:name=".VisualizeStudentTeamsActivity"
+            android:name=".VisualizeStudentTeams"
             android:label="@string/title_activity_visualize_student_teams"/>
         <activity
             android:name=".StudentOperations"

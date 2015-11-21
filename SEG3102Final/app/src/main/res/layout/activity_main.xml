@@ -23,8 +23,6 @@
 
     <include layout="@layout/content_main" />
 
-
-
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
