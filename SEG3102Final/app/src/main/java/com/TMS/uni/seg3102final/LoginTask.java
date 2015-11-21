@@ -1,13 +1,16 @@
 package com.TMS.uni.seg3102final;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -68,7 +71,8 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
         try {
             TextView status = (TextView) activity.findViewById(R.id.register_status);
             status.setText(response.getString("access_token"));
-            ((MainActivity) activity).loadOperations();
+            String userType = response.getString("user_type");
+            ((MainActivity) activity).loadOperations(userType);
         } catch (JSONException e) {
             ((MainActivity) activity).displayError();
             e.printStackTrace();

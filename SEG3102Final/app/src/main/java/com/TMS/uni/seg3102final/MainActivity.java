@@ -3,6 +3,8 @@ package com.TMS.uni.seg3102final;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -10,8 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,9 +77,19 @@ public class MainActivity extends AppCompatActivity {
         new LoginTask(this).execute(params);
     }
 
-    public void loadOperations() {
-        Intent intent = new Intent(this, StudentOperations.class);
-        startActivity(intent);
+    public void loadOperations(String type) {
+
+        if(type.equals("student")) {
+            Intent intent = new Intent(this, StudentOperations.class);
+            startActivity(intent);
+        }else if(type.equals("instructor"))
+        {
+            Intent intent = new Intent(this, InstructorOperations.class);
+            startActivity(intent);
+        }else if(type.equals("liason"))
+        {
+
+        }
     }
 
 
