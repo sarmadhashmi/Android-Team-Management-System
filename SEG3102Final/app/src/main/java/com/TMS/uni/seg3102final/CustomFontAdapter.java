@@ -27,7 +27,7 @@ class CustomFontAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
         }
         TextView textView = (TextView) convertView;
-        DisplayMetrics metrics = this.context.getResources().getDisplayMetrics();
+        DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
         float dp = 10f;
         float fpixels = metrics.density * dp;
         int pixels = (int) (fpixels + 0.5f);
