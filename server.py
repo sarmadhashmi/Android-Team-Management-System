@@ -22,11 +22,12 @@ courses = db['courses']
 
 def authenticate(username, password):
     user = student_users.find_one({"username": username})
-    type = "student"
+    user_type = "student"
     if user is None:
         user = instructor_users.find_one({"username": username})
-        type = "instructor"
+        user_type = "instructor"        
     if user:
+        user['type'] = user_type
         passMatch = bcrypt.hashpw(password.encode('utf-8'), user['password'].encode('utf-8')) == user['password'].encode('utf-8')
         if passMatch:                    
             return user
@@ -54,6 +55,13 @@ def payload_handler(identity):
     identity = str(identity["_id"])
     return {'exp': exp, 'iat': iat, 'nbf': nbf, 'identity': identity}
 
+@jwt.auth_response_handler
+def auth_response_handler(access_token, identity):
+    return jsonify({
+        'access_token': access_token.decode('utf-8'),
+        'user_type': identity['type']
+    })
+
 @app.route('/register', methods=['POST'])
 def register():
     data = {}
@@ -65,9 +73,9 @@ def register():
             username = request.json['username']
             password = request.json['password']
             email = request.json['email']
-            f_name = request.json['firstName']
-            l_name = request.json['lastName']
-            user_type = request.json['type']
+            f_name = request.json['first_name']
+            l_name = request.json['last_name']
+            user_type = request.json['user_type']
 
             #Check if user already exists
             if student_users.find_one({"username": username}):                    
@@ -203,7 +211,6 @@ def test_data():
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
-
 
 
 if __name__ == "__main__":
