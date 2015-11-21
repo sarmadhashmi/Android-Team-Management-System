@@ -6,4 +6,10 @@
     <string name="user_type">What are you?</string>
     <string name="student">Student</string>
     <string name="instructor">Instructor</string>
+    <string name="title_activity_student_operations">StudentOperations</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_create_team">CreateTeam</string>
+    <string name="title_activity_join_team">JoinTeam</string>
+    <string name="title_activity_accept_new_students">AcceptNewStudents</string>
 </resources>

@@ -46,11 +46,11 @@
     </RadioGroup>
 
     <Button
-        android:text="Register"
+        android:text="Login"
         android:id="@+id/registerButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="register"
+        android:onClick="login"
         />
 
     <TextView

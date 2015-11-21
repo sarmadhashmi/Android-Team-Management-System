@@ -1,5 +1,6 @@
 package com.sarmad.uni.seg3102final;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -23,6 +26,9 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
 
+
+    ImageButton imgButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +36,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        imgButton =(ImageButton)findViewById(R.id.imageButton);
+        imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "You download is resumed", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -45,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
         EditText password = (EditText) findViewById(R.id.password);
         String[] params = {username.getText().toString(), password.getText().toString()};
         new RegisterTask(this).execute(params);
+
+        Intent intent = new Intent(this, StudentOperations.class);
+        startActivity(intent);
+
+    }
+
+    public void login(View view) {
+        EditText username = (EditText) findViewById(R.id.username);
+        EditText password = (EditText) findViewById(R.id.password);
+        String[] params = {username.getText().toString(), password.getText().toString()};
+        new LoginTask(this).execute(params);
+
+        Intent intent = new Intent(this, StudentOperations.class);
+        startActivity(intent);
     }
 
     @Override
