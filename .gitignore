@@ -1,0 +1,8 @@
+SEG3102Final/*.iml
+SEG3102Final/.gradle/*
+SEG3102Final/local.properties
+SEG3102Final/.idea/*
+SEG3102Final/.DS_Store
+SEG3102Final/build
+SEG3102Final/captures
+.git
