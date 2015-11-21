@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <TextView android:text="Username: "
+        android:layout_width="wrap_content" android:layout_height="wrap_content">
+    </TextView>
+
+    <EditText android:id="@+id/username"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/username" />
+
+    </TableRow>
+
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    <TextView android:text="Password: "
+        android:layout_width="wrap_content" android:layout_height="wrap_content">
+    </TextView>
+
+
+    <EditText android:id="@+id/password"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/password" />
+
+</TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
     <EditText android:id="@+id/edit_message"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/edit_message" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:onClick="login"/>
+
+    </TableRow>
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,4 +66,4 @@
         android:layout_width="wrap_content" android:layout_height="wrap_content">
     </TextView>
 
-</LinearLayout>
+</TableLayout>

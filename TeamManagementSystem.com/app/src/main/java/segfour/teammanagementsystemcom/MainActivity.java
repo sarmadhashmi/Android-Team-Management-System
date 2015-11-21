@@ -2,6 +2,7 @@ package segfour.teammanagementsystemcom;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,32 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
 
     }
+
+
+    public void login(View view) {
+
+        EditText username;
+        username   = (EditText)findViewById(R.id.username);
+
+        EditText password;
+        password   = (EditText)findViewById(R.id.password);
+
+        RequestParams params = new RequestParams();
+        params.put("username", username.getText().toString());
+        params.put("password", password.getText().toString());
+
+       WebServiceApis.getInstance().login(params);
+
+
+
+
+        Intent intent = new Intent(this, homeView.class);
+        startActivity(intent);
+
+
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

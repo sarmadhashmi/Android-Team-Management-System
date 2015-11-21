@@ -23,6 +23,9 @@ public class WebServiceApis {
     private WebServiceApis() {
         //TODO:add required stuff;
     }
+
+    public static final String requestURL = "http://192.168.0.107:3001/";
+
     /**
      * Method that performs RESTful webservice invocations
      *
@@ -32,7 +35,7 @@ public class WebServiceApis {
 
         // Make RESTful webservice call using AsyncHttpClient object
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://192.168.0.107:3001/"+Req ,params ,new AsyncHttpResponseHandler() {
+        client.get(requestURL +Req ,params ,new AsyncHttpResponseHandler() {
 
 
             // When the response returned by REST has Http response code '200'
@@ -80,5 +83,52 @@ public class WebServiceApis {
         return returnMsg;
 
     }
+
+
+
+    public void login(RequestParams params){
+
+        AsyncHttpClient client =  new AsyncHttpClient();
+
+        client.put(requestURL, params,new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(String response) {
+
+               Log.i("++++++++++++++++++++ ", response);
+
+
+            }
+
+            // When the response returned by REST has Http response code other than '200'
+            @Override
+            public void onFailure(int statusCode, Throwable error,
+                                  String content) {
+                // When Http response code is '404'
+                if(statusCode == 404){
+                    Log.i(LOG_TAG, "ERROR code 404");
+                }
+                // When Http response code is '500'
+                else if(statusCode == 500){
+                    Log.i(LOG_TAG, "ERROR code 500 ");
+                }
+                // When Http response code other than 404, 500
+                else{
+                    Log.i(LOG_TAG, "ERROR code " + statusCode);
+                }
+
+                Log.i("++++++++++++++++++++ ", content);
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+
 
 }
