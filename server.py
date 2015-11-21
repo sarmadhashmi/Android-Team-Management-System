@@ -21,7 +21,9 @@ courses = db['courses']
 
 
 def authenticate(username, password):
-    user = users.find_one({"username": username})        
+    user = student_users.find_one({"username": username})
+    if user is None:
+        user = instructor_users.find_one({"username": username})
     if user:
         passMatch = bcrypt.hashpw(password.encode('utf-8'), user['password'].encode('utf-8')) == user['password'].encode('utf-8')
         if passMatch:                    
@@ -145,6 +147,10 @@ def create_team_params():
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
+
+@app.route('/data', methods=['POST'])
+
+
 
 @app.route('/data', methods=['POST'])
 def test_data():
