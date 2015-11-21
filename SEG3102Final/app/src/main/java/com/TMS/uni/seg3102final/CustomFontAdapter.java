@@ -1,4 +1,4 @@
-package com.sarmad.uni.seg3102final;
+package com.TMS.uni.seg3102final;
 
 import android.content.Context;
 import android.graphics.Typeface;

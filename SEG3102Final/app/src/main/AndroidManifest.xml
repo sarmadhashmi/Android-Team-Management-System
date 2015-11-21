@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sarmad.uni.seg3102final" >
+    package="com.TMS.uni.seg3102final" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 

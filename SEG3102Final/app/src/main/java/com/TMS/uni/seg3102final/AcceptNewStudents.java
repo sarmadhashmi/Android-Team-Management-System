@@ -1,22 +1,22 @@
-package com.sarmad.uni.seg3102final;
+package com.TMS.uni.seg3102final;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class CreateTeam extends AppCompatActivity {
+public class AcceptNewStudents extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_team);
+        setContentView(R.layout.activity_accept_new_students);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_team, menu);
+        getMenuInflater().inflate(R.menu.menu_accept_new_students, menu);
         return true;
     }
 
