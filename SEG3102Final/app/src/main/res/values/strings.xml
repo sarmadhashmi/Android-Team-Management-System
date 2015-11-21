@@ -7,9 +7,11 @@
     <string name="student">Student</string>
     <string name="instructor">Instructor</string>
     <string name="title_activity_student_operations">StudentOperations</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_create_team">CreateTeam</string>
     <string name="title_activity_join_team">JoinTeam</string>
     <string name="title_activity_accept_new_students">AcceptNewStudents</string>
+    <string name="title_activity_instructor_operations">Instructor Operations</string>
+    <string name="title_activity_visualize_student_teams">Visualize Student Teams</string>
+    <string name="title_activity_setup_parameters">Setup Parameters</string>
 </resources>
