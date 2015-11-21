@@ -22,8 +22,10 @@ courses = db['courses']
 
 def authenticate(username, password):
     user = student_users.find_one({"username": username})
+    type = "student"
     if user is None:
         user = instructor_users.find_one({"username": username})
+        type = "instructor"
     if user:
         passMatch = bcrypt.hashpw(password.encode('utf-8'), user['password'].encode('utf-8')) == user['password'].encode('utf-8')
         if passMatch:                    
@@ -120,7 +122,6 @@ def create_team_params():
         data['message'] = 'No data was provided'
     else:
         try:
-            exception = False # records whether the insertion should be performed 
             instructor_id = "" # COME BACK TO ADD IDENTITY
             course_code = request.json['courseCode']
             minimum_number_of_students = request.json['minimumNumberOfStudents']
@@ -148,8 +149,42 @@ def create_team_params():
     resp.status_code = data['status']
     return resp
 
-@app.route('/data', methods=['POST'])
+@app.route('/createTeam', methods=['POST'])
+def create_team():
+    data = {}
+    #user_id = current_identity['_id']
+    #if instructor.findOne({'_id':current_identity['_id']})
+    data['status'] = 404    
+    if not request.json:
+        data['message'] = 'No data was provided'
+    else:
+        try:
+            instructor_id = "" # COME BACK TO ADD IDENTITY
+            course_code = request.json['courseCode']
+            minimum_number_of_students = request.json['minimumNumberOfStudents']
+            maximum_number_of_students = request.json['maximumNumberOfStudents'] 
+            deadline = request.json['deadline']
 
+            #Search for course by course code
+            course = courses.find_one({"courseCode": course_code})
+            if course is None:
+                data['message'] = "The course code given does not exist"
+            else:
+                res = team_params.insert_one({
+                        "courseCode" : course['_id'],
+                        "minimumNumberOfStudents": minimum_number_of_students,
+                        "maximumNumberOfStudents": minimum_number_of_students,
+                        "deadline": deadline
+                    })
+                data['status'] = 200
+                data['message'] = 'Team Parameters were successfully created!'
+        except :
+            data['message'] = 'All fields must be provided!'
+            exception = True
+                
+    resp = jsonify(data)
+    resp.status_code = data['status']
+    return resp
 
 
 @app.route('/data', methods=['POST'])
