@@ -157,6 +157,14 @@ def create_team_params():
     resp.status_code = data['status']
     return resp
 
+@app.route('/teamParams', methods=['GET'])
+def get_team_params():
+    data = {}
+    data['status'] = 200
+    data['teamParams'] = team_params.find()
+    resp = jsonify(data)
+    resp.status_code = data['status']
+
 @app.route('/createTeam', methods=['POST'])
 def create_team():
     data = {}
@@ -168,7 +176,7 @@ def create_team():
     else:
         try:
             instructor_id = "" # COME BACK TO ADD IDENTITY
-            course_code = request.json['courseCode']
+            team_paramter_id = request.json['courseCode']
             minimum_number_of_students = request.json['minimumNumberOfStudents']
             maximum_number_of_students = request.json['maximumNumberOfStudents'] 
             deadline = request.json['deadline']
@@ -212,6 +220,52 @@ def test_data():
     resp.status_code = data['status']
     return resp
 
+ 
+if student_users.find_one({"username" : "stest"}) is None:
+
+    student_users.insert_one({
+                        "username": "stest",
+                        "password": encrypt("test"),
+                        "email" : "snake@uottawa.ca",
+                        "firstName" : "Student",
+                        "lastName" : "Tester",
+                        "programOfStudy" : "SEG"
+                    })
+
+if student_users.find_one({"username" : "stest2"}) is None:
+    student_users.insert_one({
+                        "username": "stest2",
+                        "password": encrypt("test"),
+                        "email" : "snake2@uottawa.ca",
+                        "firstName" : "Student2",
+                        "lastName" : "Tester2",
+                        "programOfStudy" : "SEG"
+                    })
+ 
+if instructor_users.find_one({"username" : "test"}) is None:
+
+    instructor_users.insert_one({
+                        "username": "test",
+                        "password": encrypt("test"),
+                        "email" : "instructor@uottawa.ca",
+                        "firstName" : "Instructor",
+                        "lastName" : "Tester",
+                        "programOfStudy" : "SEG"
+                    })
+
+if instructor_users.find_one({"username" : "test2"}) is None:
+
+    instructor_users.insert_one({
+                        "username": "test2",
+                        "password": encrypt("test"),
+                        "email" : "instructor2@uottawa.ca",
+                        "firstName" : "Instructor2",
+                        "lastName" : "Tester2",
+                        "programOfStudy" : "SEG"
+                    })
+                               
+
 
 if __name__ == "__main__":
     app.run(port=3001, host='0.0.0.0')
+
