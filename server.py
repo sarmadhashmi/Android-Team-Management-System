@@ -121,22 +121,21 @@ def protected():
 @app.route('/createTeamParams', methods=['POST'])
 #@jwt_required()
 def create_team_params():
-  
     data = {}
     #user_id = current_identity['_id']
     #if instructor.findOne({'_id':current_identity['_id']})
-    data['status'] = 404    
+    required_keys = ['course_code', 'minimum_num_students', 'maximum_num_students', 'deadline']
+    data['status'] = 404
     if not request.json:
         data['message'] = 'No data was provided'
-    else:
-        try:
-            instructor_id = "" # COME BACK TO ADD IDENTITY
-            course_code = request.json['courseCode']
-            minimum_number_of_students = request.json['minimumNumberOfStudents']
-            maximum_number_of_students = request.json['maximumNumberOfStudents'] 
+    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
+            course_code = request.json['course_code']
+            minimum_number_of_students = request.json['minimum_num_students']
+            maximum_number_of_students = request.json['maximum_num_students'] 
             deadline = request.json['deadline']
-
-            #Search for course by course code
+            #SHOULD HAVE VALIDATION HERE THAT CHECKS WHETHER THE PARAMETERS ARE IN CORRECT FORMAT (DATE, INTEGER, ETC.)
+            
+            # Search for course by course code
             course = courses.find_one({"courseCode": course_code})
             if course is None:
                 data['message'] = "The course code given does not exist"
@@ -149,10 +148,8 @@ def create_team_params():
                     })
                 data['status'] = 200
                 data['message'] = 'Team Parameters were successfully created!'
-        except :
-            data['message'] = 'All fields must be provided!'
-            exception = True
-                
+    else:
+        data['message'] = 'All fields must be provided!'                
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
@@ -203,69 +200,39 @@ def create_team():
     return resp
 
 
-@app.route('/data', methods=['POST'])
+#Creates test data using upsert (add if user does not exist, otherwise update)
+#http://api.mongodb.org/python/current/api/pymongo/collection.html
 def test_data():
-    courses.insert_one({
-        "courseCode": "SEG 3102",
-        "courseSection": "A"
-        })
-    courses.insert_one({
-        "courseCode": "SEG 3101",
-        "courseSection": "A"
-        })
-    data = {}
-    data['status'] = 200
-    data['message'] = 'Successfully added data'
-    resp = jsonify(data)
-    resp.status_code = data['status']
-    return resp
-
- 
-if student_users.find_one({"username" : "stest"}) is None:
-
-    student_users.insert_one({
-                        "username": "stest",
-                        "password": encrypt("test"),
-                        "email" : "snake@uottawa.ca",
-                        "firstName" : "Student",
-                        "lastName" : "Tester",
-                        "programOfStudy" : "SEG"
-                    })
-
-if student_users.find_one({"username" : "stest2"}) is None:
-    student_users.insert_one({
-                        "username": "stest2",
-                        "password": encrypt("test"),
-                        "email" : "snake2@uottawa.ca",
-                        "firstName" : "Student2",
-                        "lastName" : "Tester2",
-                        "programOfStudy" : "SEG"
-                    })
- 
-if instructor_users.find_one({"username" : "test"}) is None:
-
-    instructor_users.insert_one({
-                        "username": "test",
-                        "password": encrypt("test"),
-                        "email" : "instructor@uottawa.ca",
-                        "firstName" : "Instructor",
-                        "lastName" : "Tester",
-                        "programOfStudy" : "SEG"
-                    })
-
-if instructor_users.find_one({"username" : "test2"}) is None:
-
-    instructor_users.insert_one({
-                        "username": "test2",
-                        "password": encrypt("test"),
-                        "email" : "instructor2@uottawa.ca",
-                        "firstName" : "Instructor2",
-                        "lastName" : "Tester2",
-                        "programOfStudy" : "SEG"
-                    })
-                               
-
+    courses.replace_one({"courseCode": "SEG 3102"},
+                   {
+                        "courseCode": "SEG 3102",
+                        "courseSection": "A"
+                    }, True)
+    courses.replace_one({"courseCode": "SEG 3101"},
+                   {
+                        "courseCode": "SEG 3101",
+                        "courseSection": "A"
+                    }, True)
+    student_users.replace_one({"username":"stest"},
+                             {
+                                "username": "stest",
+                                "password": encrypt("stest"),
+                                "email" : "snake@uottawa.ca",
+                                "firstName" : "Student",
+                                "lastName" : "Tester",
+                                "programOfStudy" : "SEG"
+                            }, True)
+    instructor_users.replace_one({"username": "test"},
+                            {
+                                "username":"test",
+                                "password": encrypt("test"),
+                                "email" : "instructor@uottawa.ca",
+                                "firstName" : "Instructor",
+                                "lastName" : "Tester",
+                                "programOfStudy" : "SEG"
+                            }, True)
 
 if __name__ == "__main__":
-    app.run(port=3001, host='0.0.0.0')
+    test_data()
+    app.run(port=3001, host='0.0.0.0')    
 
