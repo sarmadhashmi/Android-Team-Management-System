@@ -3,6 +3,7 @@ package com.TMS.uni.seg3102final;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,13 +28,9 @@ class CustomFontAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
         }
         TextView textView = (TextView) convertView;
-        DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
-        float dp = 10f;
-        float fpixels = metrics.density * dp;
-        int pixels = (int) (fpixels + 0.5f);
         textView.setText(getItem(position));
         textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(pixels);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
         textView.setTypeface(tf);
         return textView;
     }
