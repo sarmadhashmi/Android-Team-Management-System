@@ -1,22 +1,28 @@
-package com.TMS.uni.seg3102final;
+package com.TMS.uni.seg3102final.tasks;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
+
+import com.TMS.uni.seg3102final.MainActivity;
+import com.TMS.uni.seg3102final.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
-public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
+public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
     Activity activity;
-    RegisterTask(Activity activity) {
+    public LoginTask(Activity activity) {
         this.activity = activity;
     }
 
@@ -30,7 +36,7 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             credentials.put("username", username);
             credentials.put("password", password);
 
-            URL url = new URL("http://192.168.0.103:3001/register");
+            URL url = new URL("http://192.168.0.103:3001/auth");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
@@ -62,10 +68,16 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
+
+        ((MainActivity) activity).dismiss();
+
         try {
             TextView status = (TextView) activity.findViewById(R.id.register_status);
-            status.setText(response.getString("message"));
+            status.setText(response.getString("access_token"));
+            String userType = response.getString("user_type");
+            ((MainActivity) activity).loadOperations(userType);
         } catch (JSONException e) {
+            ((MainActivity) activity).displayError();
             e.printStackTrace();
         }
     }
