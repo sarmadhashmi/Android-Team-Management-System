@@ -73,8 +73,8 @@ def dummy_data():
                     }, True)
 
     ##Team Paramters
-    course_3102 = courses.find_one({"courseCode" : "SEG 3102"})
-    course_3101 = courses.find_one({"courseCode" : "SEG 3101"})
+    course_3102 = courses.find_one({"courseCode" : "SEG 3102", "courseSection" : "A"})
+    course_3101 = courses.find_one({"courseCode" : "SEG 3101", "courseSection" : "B"})
     team_params.replace_one(
                 {
                     "courseId" : course_3102['_id'],
@@ -84,8 +84,8 @@ def dummy_data():
                 },
                 {
                     "courseId" : course_3102['_id'],
-                    "minimumNumberOfStudents": "2",
-                    "maximumNumberOfStudents": "4",
+                    "minimumNumberOfStudents": 2,
+                    "maximumNumberOfStudents": 4,
                     "deadline": "November 2, 2015"
                 }
                 , True)
@@ -93,8 +93,8 @@ def dummy_data():
     team_params.replace_one(
                 {
                     "courseId" : course_3101['_id'],
-                    "minimumNumberOfStudents": "2",
-                    "maximumNumberOfStudents": "4",
+                    "minimumNumberOfStudents": 2,
+                    "maximumNumberOfStudents": 4,
                     "deadline": "November 2, 2015"
                 },
                 {

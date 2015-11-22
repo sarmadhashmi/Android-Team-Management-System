@@ -160,9 +160,21 @@ def create_team_params():
 def get_team_params():
     data = {}
     data['status'] = 200
-    data['teamParams'] = team_params.find()
+    teamParams = []
+    for row in team_params.find():
+        row['_id'] = str(row['_id'])
+        course = courses.find_one({'_id': row['courseId']})
+        row['courseId'] = str(row['courseId'])
+        row['course_code'] = course['courseCode']
+        row['course_section'] = course['courseSection']
+        teamParams.append(row)
+        
+        
+    data['teamParams'] = teamParams
     resp = jsonify(data)
     resp.status_code = data['status']
+
+    return resp
 
 @app.route('/createTeam', methods=['POST'])
 def create_team():
@@ -175,7 +187,7 @@ def create_team():
     else:
         try:
             instructor_id = "" # COME BACK TO ADD IDENTITY
-            team_paramter_id = request.json['courseCode']
+            team_paramter_id = request.json['course_code']
             minimum_number_of_students = request.json['minimumNumberOfStudents']
             maximum_number_of_students = request.json['maximumNumberOfStudents'] 
             deadline = request.json['deadline']
