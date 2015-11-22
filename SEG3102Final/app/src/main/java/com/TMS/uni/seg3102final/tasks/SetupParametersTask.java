@@ -1,25 +1,27 @@
-package com.TMS.uni.seg3102final;
+package com.TMS.uni.seg3102final.tasks;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.TMS.uni.seg3102final.R;
+import com.TMS.uni.seg3102final.SetupParameters;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
-public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
+public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObject> {
     Activity activity;
-    LoginTask(Activity activity) {
+    public SetupParametersTask(Activity activity) {
         this.activity = activity;
     }
 
@@ -27,13 +29,17 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
     protected JSONObject doInBackground(String[] params) {
         if (params.length < 2) throw new InvalidParameterException("Not enough parameters");
         try {
-            String username = params[0];
-            String password = params[1];
+            String course_code = params[0];
+            String min_num_students = params[1];
+            String max_num_students = params[2];
+            String deadline = params[3];
             JSONObject credentials = new JSONObject();
-            credentials.put("username", username);
-            credentials.put("password", password);
+            credentials.put("course_code", course_code);
+            credentials.put("minimum_num_students", min_num_students);
+            credentials.put("maximum_num_students", max_num_students);
+            credentials.put("deadline", deadline);
 
-            URL url = new URL("http://192.168.0.103:3001/auth");
+            URL url = new URL("http://192.168.0.103:3001/createTeamParams");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
@@ -65,16 +71,14 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
-
-        ((MainActivity) activity).dismiss();
-
         try {
-            TextView status = (TextView) activity.findViewById(R.id.register_status);
-            status.setText(response.getString("access_token"));
-            String userType = response.getString("user_type");
-            ((MainActivity) activity).loadOperations(userType);
+            ((SetupParameters) activity).dismiss();
+            Context context = activity.getApplicationContext();
+            String text = response.getString("message");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         } catch (JSONException e) {
-            ((MainActivity) activity).displayError();
             e.printStackTrace();
         }
     }
