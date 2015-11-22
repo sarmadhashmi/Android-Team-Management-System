@@ -125,24 +125,25 @@ def create_team_params():
     data = {}
     #user_id = current_identity['_id']
     #if instructor.findOne({'_id':current_identity['_id']})
-    required_keys = ['course_code', 'minimum_num_students', 'maximum_num_students', 'deadline']
+    required_keys = ['course_code', 'course_section','minimum_num_students', 'maximum_num_students', 'deadline']
     data['status'] = 404
     if not request.json:
         data['message'] = 'No data was provided'
     elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
             course_code = request.json['course_code']
+            course_section = request.json['course_section']
             minimum_number_of_students = request.json['minimum_num_students']
             maximum_number_of_students = request.json['maximum_num_students'] 
             deadline = request.json['deadline']
             #SHOULD HAVE VALIDATION HERE THAT CHECKS WHETHER THE PARAMETERS ARE IN CORRECT FORMAT (DATE, INTEGER, ETC.)
             
             # Search for course by course code
-            course = courses.find_one({"courseCode": course_code})
+            course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
             if course is None:
                 data['message'] = "The course code given does not exist"
             else:
                 res = team_params.insert_one({
-                        "courseCode" : course['_id'],
+                        "courseId" : course['_id'],
                         "minimumNumberOfStudents": minimum_number_of_students,
                         "maximumNumberOfStudents": minimum_number_of_students,
                         "deadline": deadline
