@@ -6,6 +6,7 @@ from flask import request
 from datetime import datetime
 from flask_jwt import JWT, jwt_required, current_identity, JWTError
 import bcrypt
+import dummyData
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -200,39 +201,7 @@ def create_team():
     return resp
 
 
-#Creates test data using upsert (add if user does not exist, otherwise update)
-#http://api.mongodb.org/python/current/api/pymongo/collection.html
-def test_data():
-    courses.replace_one({"courseCode": "SEG 3102"},
-                   {
-                        "courseCode": "SEG 3102",
-                        "courseSection": "A"
-                    }, True)
-    courses.replace_one({"courseCode": "SEG 3101"},
-                   {
-                        "courseCode": "SEG 3101",
-                        "courseSection": "A"
-                    }, True)
-    student_users.replace_one({"username":"stest"},
-                             {
-                                "username": "stest",
-                                "password": encrypt("stest"),
-                                "email" : "snake@uottawa.ca",
-                                "firstName" : "Student",
-                                "lastName" : "Tester",
-                                "programOfStudy" : "SEG"
-                            }, True)
-    instructor_users.replace_one({"username": "test"},
-                            {
-                                "username":"test",
-                                "password": encrypt("test"),
-                                "email" : "instructor@uottawa.ca",
-                                "firstName" : "Instructor",
-                                "lastName" : "Tester",
-                                "programOfStudy" : "SEG"
-                            }, True)
-
 if __name__ == "__main__":
-    test_data()
+    dummyData.dummy_data()
     app.run(port=3001, host='0.0.0.0')    
 
