@@ -279,6 +279,40 @@ def get_incomplete_teams():
 
     return resp
 
+#Use case Join Team goes against our design. A student can only join if they are not in a team already
+# TODO figure this out and make the appropriate change
+@app.route('/joinTeams', methods=['POST'])
+def join_teams():
+    data = {}
+    required_keys = ['username', 'team_ids']
+    data['status'] = 404    
+    if not request.json:
+        data['message'] = 'No data was provided'
+    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys   
+        team_ids = request.json['team_ids']
+        username = request.json['username']
+        ##Check for invalid Team ids? no way this can happend tho..
+        for team in team_ids:
+            current_team = teams.find_one({"_id" : ObjectId(team)})
+            requests = current_team['requestedMembers']
+            if username not in requests:
+                requests.append(username)
+            teams.update_one(
+                {
+                    "_id": current_team['_id']
+                },
+                {
+                    "$set": {"requestedMembers": requests}
+                })
+        data['status'] = 200
+        data['message'] = 'Successfully joined teams'
+    else: 
+        data['message'] = 'Username or List of teams was not provided!'  
+    resp = jsonify(data)
+    resp.status_code = data['status']
+    return resp
+
+
 if __name__ == "__main__":
     dummyData.dummy_data()
     app.run(port=3001, host='0.0.0.0')    
