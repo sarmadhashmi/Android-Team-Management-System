@@ -36,7 +36,7 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             credentials.put("username", username);
             credentials.put("password", password);
 
-            URL url = new URL("http://192.168.0.103:3001/auth");
+            URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/auth");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.R;
 import com.TMS.uni.seg3102final.SetupParameters;
 
@@ -39,7 +40,7 @@ public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObjec
             credentials.put("maximum_num_students", max_num_students);
             credentials.put("deadline", deadline);
 
-            URL url = new URL("http://192.168.0.103:3001/createTeamParams");
+            URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/createTeamParams");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);

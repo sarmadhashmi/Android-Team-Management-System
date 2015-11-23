@@ -30,7 +30,7 @@ public class StudentTeamsTask extends AsyncTask<Void, JSONObject, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... params) {
         try {
-            URL url = new URL("http://192.168.0.103:3001/teams");
+            URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/teams");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             // Get response
