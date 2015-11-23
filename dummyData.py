@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-import server
+import server, time
 
 def dummy_data():
 
@@ -7,6 +7,7 @@ def dummy_data():
     client = MongoClient('mongodb://localhost:27017/')
     db = client['seg3102']
     users = db['users']
+    teams = db['teams']
     student_users = db['students']
     instructor_users = db['instructors']
     team_params = db['teamParams']
@@ -104,4 +105,53 @@ def dummy_data():
                     "deadline": "November 2, 2015"
                 }
                 , True)
+
+    #Teams
+    team_params_1 = team_params.find_one({"courseId": course_3101['_id']})
+    team_params_2 = team_params.find_one({"courseId": course_3101['_id']})
+    teams.replace_one(
+                {
+                    "teamName" : "SnakeFour"
+                },
+                {
+                    "teamParamId" : team_params_1['_id'],
+                    "teamName" : "SnakeFour",
+                    "dateOfCreation" : time.strftime("%c"),
+                    "status" : "incomplete",
+                    "teamSize" : 3,
+                    "teamMembers": ["Salman", "Salman", "Janac"],
+                    "liason" : "ID OF CURRENT USER",
+                    "requestedMembers" : ["Muraad"]                        
+                }, True)
+    
+    teams.replace_one(
+                {
+                    "teamName" : "NoRequestedMembers"
+                },
+                {
+                    "teamParamId" : team_params_1['_id'],
+                    "teamName" : "NoRequestedMembers",
+                    "dateOfCreation" : time.strftime("%c"),
+                    "status" : "incomplete",
+                    "teamSize" : 3,
+                    "teamMembers": ["Test1", "Test2", "Janac"],
+                    "liason" : "ID OF CURRENT USER",
+                    "requestedMembers" : []                        
+                }, True)
+    
+    teams.replace_one(
+                {
+                    "teamName" : "OneMember"
+                },
+                {
+                    "teamParamId" : team_params_2['_id'],
+                    "teamName" : "OneMember",
+                    "dateOfCreation" : time.strftime("%c"),
+                    "status" : "incomplete",
+                    "teamSize" : 1,
+                    "teamMembers": ["Salman"],
+                    "liason" : "ID OF CURRENT USER",
+                    "requestedMembers" : ["Muraad"]                        
+                }, True)
+    
     

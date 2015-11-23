@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.TMS.uni.seg3102final.VisualizeStudentTeams">
+
+    <ExpandableListView android:id="@+id/expand_student_teams"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:text="Visualize students!" />
-</LinearLayout>
+        android:layout_width="match_parent"/>
+
+</RelativeLayout>

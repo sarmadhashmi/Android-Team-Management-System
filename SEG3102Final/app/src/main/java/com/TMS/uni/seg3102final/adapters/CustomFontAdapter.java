@@ -1,4 +1,4 @@
-package com.TMS.uni.seg3102final;
+package com.TMS.uni.seg3102final.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-class CustomFontAdapter extends ArrayAdapter<String> {
+public class CustomFontAdapter extends ArrayAdapter<String> {
     Typeface tf;
     LayoutInflater inflater;
     Context context;
