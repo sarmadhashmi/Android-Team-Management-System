@@ -29,11 +29,13 @@ public class SetupParameters extends AppCompatActivity {
 
     public void setupParameters(View v) {
         EditText course_code = (EditText) findViewById(R.id.course_code);
+        EditText course_section = (EditText) findViewById(R.id.course_section);
         EditText min_students = (EditText) findViewById(R.id.min_students);
         EditText max_students = (EditText) findViewById(R.id.max_students);
         EditText deadline = (EditText) findViewById(R.id.deadline);
         String[] params = {
                 course_code.getText().toString(),
+                course_section.getText().toString(),
                 min_students.getText().toString(),
                 max_students.getText().toString(),
                 deadline.getText().toString()

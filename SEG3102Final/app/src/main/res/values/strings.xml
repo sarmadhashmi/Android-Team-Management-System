@@ -15,7 +15,9 @@
     <string name="title_activity_visualize_student_teams">Visualize Student Teams</string>
     <string name="title_activity_setup_parameters">Setup Parameters</string>
     <string name="course_code">Course Code:</string>
+    <string name="course_section">Course Section:</string>
     <string name="course_code_example">Example: SEG 3102</string>
+    <string name="course_section_example">Example: A</string>
     <string name="min_students">Min Students:</string>
     <string name="min_students_example">Example: 1</string>
     <string name="max_students">Max Students:</string>

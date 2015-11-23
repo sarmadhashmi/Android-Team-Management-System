@@ -146,7 +146,7 @@ def create_team_params():
             # Search for course by course code & section
             course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
             if course is None:
-                data['message'] = "The course code given does not exist"
+                data['message'] = "The course code with specified section does not exist"
             else:
                 res = team_params.insert_one({
                         "courseId" : course['_id'],

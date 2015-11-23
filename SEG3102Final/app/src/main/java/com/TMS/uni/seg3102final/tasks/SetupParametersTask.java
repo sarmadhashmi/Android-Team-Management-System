@@ -31,11 +31,13 @@ public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObjec
         if (params.length < 2) throw new InvalidParameterException("Not enough parameters");
         try {
             String course_code = params[0];
-            String min_num_students = params[1];
-            String max_num_students = params[2];
-            String deadline = params[3];
+            String course_section = params[1];
+            String min_num_students = params[2];
+            String max_num_students = params[3];
+            String deadline = params[4];
             JSONObject credentials = new JSONObject();
             credentials.put("course_code", course_code);
+            credentials.put("course_section", course_section);
             credentials.put("minimum_num_students", min_num_students);
             credentials.put("maximum_num_students", max_num_students);
             credentials.put("deadline", deadline);
