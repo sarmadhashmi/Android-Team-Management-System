@@ -74,16 +74,19 @@ def dummy_data():
                     }, True)
 
     ##Team Paramters
+    instructor = instructor_users.find_one({"username" : "test"})
     course_3102 = courses.find_one({"courseCode" : "SEG 3102", "courseSection" : "A"})
     course_3101 = courses.find_one({"courseCode" : "SEG 3101", "courseSection" : "B"})
     team_params.replace_one(
                 {
+                    "InstructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents" : 2,
                     "maximumNumberOfStudents" : 4,
                     "deadline" : "November 2, 2015"
                 },
                 {
+                    "InstructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
@@ -93,12 +96,14 @@ def dummy_data():
 
     team_params.replace_one(
                 {
+                    "InstructorId" : instructor['_id'],
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
                     "deadline": "November 2, 2015"
                 },
                 {
+                    "InstructorId" : instructor['_id'],
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
@@ -117,10 +122,10 @@ def dummy_data():
                     "teamParamId" : team_params_1['_id'],
                     "teamName" : "SnakeFour",
                     "dateOfCreation" : time.strftime("%c"),
-                    "status" : "incomplete",
-                    "teamSize" : 3,
-                    "teamMembers": ["Salman", "Salman", "Janac"],
-                    "liason" : "ID OF CURRENT USER",
+                    "status" : "complete",
+                    "teamSize" : 4,
+                    "teamMembers": ["Salman", "Janac", "test", "Sarmad"],
+                    "liason" : "test",
                     "requestedMembers" : ["Muraad"]                        
                 }, True)
     
@@ -134,8 +139,8 @@ def dummy_data():
                     "dateOfCreation" : time.strftime("%c"),
                     "status" : "incomplete",
                     "teamSize" : 3,
-                    "teamMembers": ["Test1", "Test2", "Janac"],
-                    "liason" : "ID OF CURRENT USER",
+                    "teamMembers": ["stest", "stest2", "Janac"],
+                    "liason" : "stest",
                     "requestedMembers" : []                        
                 }, True)
     
@@ -150,7 +155,7 @@ def dummy_data():
                     "status" : "incomplete",
                     "teamSize" : 1,
                     "teamMembers": ["Salman"],
-                    "liason" : "ID OF CURRENT USER",
+                    "liason" : "Salman",
                     "requestedMembers" : ["Muraad"]                        
                 }, True)
     

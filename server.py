@@ -41,9 +41,12 @@ def authenticate(username, password):
 
 def identity(payload):
     user_id = payload['identity']
-    if user_id:     
-        return users.find_one({"_id": ObjectId(user_id)})
-    return None
+    user = None
+    if user_id:
+        user = student_users.find_one({"_id": ObjectId(user_id)})    
+        if user is None:
+            user = instructor_users.find_one({"_id": ObjectId(user_id)})                
+    return user
 
 def encrypt(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -81,7 +84,7 @@ def register():
         l_name = request.json['last_name']
         user_type = request.json['user_type']
 
-            #Check if user already exists
+        #Check if user already exists
         if student_users.find_one({"username": username}):                    
             data['message'] = "Student with that username already exists"
         elif instructor_users.find_one({"username": username}):                    
@@ -126,43 +129,47 @@ def protected():
     return '%s' % current_identity
 
 @app.route('/createTeamParams', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def create_team_params():
     data = {}
-    #user_id = current_identity['_id']
-    #if instructor.findOne({'_id':current_identity['_id']})
-    required_keys = ['course_code', 'course_section','minimum_num_students', 'maximum_num_students', 'deadline']
+    user_id = current_identity['_id']
     data['status'] = 404
-    if not request.json:
-        data['message'] = 'No data was provided'
-    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
-            course_code = request.json['course_code']
-            course_section = request.json['course_section']
-            minimum_number_of_students = request.json['minimum_num_students']
-            maximum_number_of_students = request.json['maximum_num_students'] 
-            deadline = request.json['deadline']
-            #SHOULD HAVE VALIDATION HERE THAT CHECKS WHETHER THE PARAMETERS ARE IN CORRECT FORMAT (DATE, INTEGER, ETC.)
-            
-            # Search for course by course code & section
-            course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
-            if course is None:
-                data['message'] = "The course code with specified section does not exist"
-            else:
-                res = team_params.insert_one({
-                        "courseId" : course['_id'],
-                        "minimumNumberOfStudents": minimum_number_of_students,
-                        "maximumNumberOfStudents": minimum_number_of_students,
-                        "deadline": deadline
-                    })
-                data['status'] = 200
-                data['message'] = 'Team Parameters were successfully created!'
+    if instructor_users.find_one({'_id': user_id}):
+        required_keys = ['course_code', 'course_section','minimum_num_students', 'maximum_num_students', 'deadline']
+        if not request.json:
+            data['message'] = 'No data was provided'
+        elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
+                course_code = request.json['course_code']
+                course_section = request.json['course_section']
+                minimum_number_of_students = request.json['minimum_num_students']
+                maximum_number_of_students = request.json['maximum_num_students'] 
+                deadline = request.json['deadline']
+                #SHOULD HAVE VALIDATION HERE THAT CHECKS WHETHER THE PARAMETERS ARE IN CORRECT FORMAT (DATE, INTEGER, ETC.)
+                
+                # Search for course by course code & section
+                course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
+                if course is None:
+                    data['message'] = "The course code with the specified section does not exist"
+                else:
+                    res = team_params.insert_one({
+                            "instructorId" : user_id,
+                            "courseId" : course['_id'],
+                            "minimumNumberOfStudents": minimum_number_of_students,
+                            "maximumNumberOfStudents": minimum_number_of_students,
+                            "deadline": deadline
+                        })
+                    data['status'] = 200
+                    data['message'] = 'Team Parameters were successfully created!'
+        else:
+            data['message'] = 'All fields must be provided!'
     else:
-        data['message'] = 'All fields must be provided!'                
+        data['message'] = 'You do not have permission to create team parameters'
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
 
 @app.route('/teamParams', methods=['GET'])
+@jwt_required()
 def get_team_params():
     data = {}
     data['status'] = 200
@@ -183,11 +190,11 @@ def get_team_params():
     return resp
 
 @app.route('/createTeam', methods=['POST'])
+@jwt_required()
 def create_team():
     data = {}
     required_keys = ['team_param_id', 'team_name', 'team_members']
-    #user_id = current_identity['_id']
-    #if instructor.findOne({'_id':current_identity['_id']})
+    user_id = current_identity['_id']
     data['status'] = 404    
     if not request.json:
         data['message'] = 'No data was provided'
@@ -195,18 +202,29 @@ def create_team():
             team_param_id = request.json['team_param_id']
             team_name = request.json['team_name']
             team_members = request.json['team_members']
+            liason = student_users.find_one({"_id" : user_id})
             error = False
+            if liason:
+                liason = liason['username'] 
+                team_members.append(liason)
+            else:
+                error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
             try:
                 teamParam = team_params.find_one({'_id' : ObjectId(team_param_id)})
+                if teamParam is None:
+                    error = True
             except: 
                 error = True #invalid teamParam id
             if error:
                 data['message'] = "No team parameter exists for the given id"
-            elif teams.find_one({'teamName' : team_name}):
+            elif len(team_members) > teamParam['maximumNumberOfStudents']:
+                data['message'] = "You have selected too many members, the maximum number of members allowed is "+ str(teamParam['maximumNumberOfStudents']) 
+            elif len(team_members) < teamParam['minimumNumberOfStudents']:
+                data['message'] = "You did not provide enough members, the minimum number of members allowed is "+ str(teamParam['minimumNumberOfStudents'])
+            elif teams.find_one({'teamName' : team_name}): #Check within the teams with same teamparam (Valid to have different courses have teams with same name? 
                 data['message'] = "A team already exists with the given team name"
             else:
-                #Check if each student in team_members IS NOT in a team
-                #TODO
+                #Check if each username in the list of team_members received is a valid student user
                 createTeam = True
                 members = []
                 for member in team_members:
@@ -217,8 +235,18 @@ def create_team():
                     members.append(member)
 
                 if createTeam:
+                    #Check if each student in team_members IS NOT in a team with the team param
+                    list_of_teams = teams.find({"teamParameterId" : team_param_id})
+                    for team in list_of_teams:
+                        for student in team_members:
+                            if student in team['teamMembers']:
+                                createTeam = False
+                                data['message'] = student + ' is already in a team'
+                                break
+
+                #If createTeam is still true, then we can insert a new team into the database
+                if createTeam:
                     #Check if members is less than max team size
-                    teamParam = team_params.find_one({'_id' : ObjectId(team_param_id)})
                     less_than_max = len(members) <teamParam['maximumNumberOfStudents']
                     if less_than_max:
                         status = "incomplete"
@@ -232,7 +260,7 @@ def create_team():
                             "status" : status,
                             "teamSize" : len(members),
                             "teamMembers": members,
-                            "liason" : "ID OF CURRENT USER",
+                            "liason" : liason,
                             "requestedMembers" : []
                             
                         })
@@ -246,6 +274,7 @@ def create_team():
 
 #Use case : Visualize student Teams
 @app.route('/teams', methods=['GET'])
+@jwt_required()
 def get_teams():
     data = {}
     data['status'] = 200
@@ -254,8 +283,6 @@ def get_teams():
         row['_id'] = str(row['_id'])
         row['teamParamId'] = str(row['teamParamId'])
         list_of_teams.append(row)
-        
-        
     data['teams'] = list_of_teams
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -263,6 +290,7 @@ def get_teams():
     return resp
 
 @app.route('/incompleteTeams', methods=['GET'])
+@jwt_required()
 def get_incomplete_teams():
     data = {}
     data['status'] = 200
@@ -282,32 +310,50 @@ def get_incomplete_teams():
 #Use case Join Team goes against our design. A student can only join if they are not in a team already
 # TODO figure this out and make the appropriate change
 @app.route('/joinTeams', methods=['POST'])
+@jwt_required()
 def join_teams():
     data = {}
-    required_keys = ['username', 'team_ids']
+    required_keys = ['team_ids']
     data['status'] = 404    
     if not request.json:
         data['message'] = 'No data was provided'
     elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys   
         team_ids = request.json['team_ids']
-        username = request.json['username']
-        ##Check for invalid Team ids? no way this can happend tho..
-        for team in team_ids:
-            current_team = teams.find_one({"_id" : ObjectId(team)})
-            requests = current_team['requestedMembers']
-            if username not in requests:
-                requests.append(username)
-            teams.update_one(
-                {
-                    "_id": current_team['_id']
-                },
-                {
-                    "$set": {"requestedMembers": requests}
-                })
-        data['status'] = 200
-        data['message'] = 'Successfully joined teams'
+        #Check if team_ids are valid
+        invalid_team_ids = False
+        try:
+            for id in team_ids:
+                temp_team = teams.find_one({"_id" : ObjectId(id)})
+                if team_team is None:
+                    invalid_team_ids = True
+                    break
+        except:
+            invalid_team_ids = True
+
+        if invalid_team_ids:
+            data['message'] = 'A team with id: ' + id + ' does not exist'
+        else:
+            user = student_users.find_one({"_id": current_identity['_id']})
+            if user is None:
+                user = instructor_users.find_one({"_id" : current_identity['_id']})
+            username = user['username']
+            ##Check for invalid Team ids? no way this can happend tho..
+            for team in team_ids:
+                current_team = teams.find_one({"_id" : ObjectId(team)})
+                requests = current_team['requestedMembers']
+                if username not in requests and username not in current_team['teamMembers']:
+                    requests.append(username)
+                teams.update_one(
+                    {
+                        "_id": current_team['_id']
+                    },
+                    {
+                        "$set": {"requestedMembers": requests}
+                    })
+            data['status'] = 200
+            data['message'] = 'Successfully joined teams'
     else: 
-        data['message'] = 'Username or List of teams was not provided!'  
+        data['message'] = 'List of teams was not provided!'  
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
