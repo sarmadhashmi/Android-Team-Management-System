@@ -38,6 +38,16 @@ def dummy_data():
                             "programOfStudy" : "SEG"
                             }
                             , True)
+    student_users.replace_one({"username" : "reqTest"},
+                            {
+                            "username": "reqTest",
+                            "password": server.encrypt("test"),
+                            "email" : "snake2@uottawa.ca",
+                            "firstName" : "Student2",
+                            "lastName" : "Tester2",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
     ##Insert Instructors 
     instructor_users.replace_one({"username" : "test"},
                             {
@@ -125,7 +135,7 @@ def dummy_data():
                     "status" : "complete",
                     "teamSize" : 4,
                     "teamMembers": ["Salman", "Janac", "test", "Sarmad"],
-                    "liason" : "test",
+                    "liason" : "stest",
                     "requestedMembers" : ["Muraad"]                        
                 }, True)
     
@@ -154,9 +164,23 @@ def dummy_data():
                     "dateOfCreation" : time.strftime("%c"),
                     "status" : "incomplete",
                     "teamSize" : 1,
-                    "teamMembers": ["Salman"],
-                    "liason" : "Salman",
-                    "requestedMembers" : ["Muraad"]                        
+                    "teamMembers": ["stest"],
+                    "liason" : "stest",
+                    "requestedMembers" : ["reqTest"]                        
                 }, True)
-    
+
+    teams.replace_one(
+                {
+                    "teamName" : "OneMember"
+                },
+                {
+                    "teamParamId" : team_params_2['_id'],
+                    "teamName" : "OneMember",
+                    "dateOfCreation" : time.strftime("%c"),
+                    "status" : "incomplete",
+                    "teamSize" : 1,
+                    "teamMembers": ["stest"],
+                    "liason" : "stest",
+                    "requestedMembers" : ["reqTest"]                        
+                }, True)
     

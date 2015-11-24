@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from flask import Flask
 from flask import jsonify
 from flask import request
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_jwt import JWT, jwt_required, current_identity, JWTError
 import bcrypt
 import dummyData
@@ -12,6 +12,7 @@ import time
 app = Flask(__name__)
 app.config["DEBUG"] = True
 app.config["SECRET_KEY"] = 'supercomplexrandomvalue'
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=7200) # token expires every 2 hours
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['seg3102']
@@ -209,12 +210,7 @@ def create_team():
                 team_members.append(liason)
             else:
                 error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
-            try:
-                teamParam = team_params.find_one({'_id' : ObjectId(team_param_id)})
-                if teamParam is None:
-                    error = True
-            except: 
-                error = True #invalid teamParam id
+            error = error or invalid_object(team_param_id, team_params)[0]
             if error:
                 data['message'] = "No team parameter exists for the given id"
             elif len(team_members) > teamParam['maximumNumberOfStudents']:
@@ -321,15 +317,11 @@ def join_teams():
         team_ids = request.json['team_ids']
         #Check if team_ids are valid
         invalid_team_ids = False
-        try:
-            for id in team_ids:
-                temp_team = teams.find_one({"_id" : ObjectId(id)})
-                if team_team is None:
-                    invalid_team_ids = True
-                    break
-        except:
-            invalid_team_ids = True
-
+        
+        for id in team_ids:
+            invalid_team_ids = invalid_object(id, teams)[0]
+            if invalid_team_ids:
+                break
         if invalid_team_ids:
             data['message'] = 'A team with id: ' + id + ' does not exist'
         else:
@@ -357,6 +349,117 @@ def join_teams():
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
+
+#View Requested members of a specified team. Use Case: Accept new Students
+@app.route('/viewRequestedMembers', methods=['GET'])
+@jwt_required()
+def view_requested_members():
+    data = {}
+    data['status'] = 404
+    current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
+    #assuming you are a student
+
+    if 'team_id' in request.args and current_user is not None: #TEMP SOLUTION UNTIL WE FIGURE out whether to allow instructors
+        team_id = request.args['team_id']
+        invalid_team_id= invalid_object(team_id, teams)[0]
+
+        if invalid_team_id:
+            #data['message'] = "A team with the specified team id does not exist"
+            data['message'] = "A team with id: " + team_id + " does not exist"
+        elif current_user['username'] != team['liason']:
+            data['message'] = "Only liasons of the requested team can perform this operation"
+        else:
+            list_of_requests = team['requestedMembers']
+            #Should I return empty members? or tell you there are no requested members?
+            data['requestedMembers'] = list_of_requests
+            data['status'] = 200
+            
+    else: 
+        data['message'] = "No team id was provided"
+
+
+    resp = jsonify(data)
+    resp.status_code = data['status']
+
+    return resp
+
+@app.route('/acceptMembers', methods=['POST'])
+@jwt_required()
+def accept_members():
+    data = {}
+    required_keys = ['team_id','list_of_usernames']
+    data['status'] = 404    
+    current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
+    if not request.json:
+        data['message'] = 'No data was provided'
+    elif current_user is None:
+        data['message'] = 'You do not have permission to accept new members'
+    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys  
+        team_id = request.json['team_id']
+        list_of_usernames = request.json['list_of_usernames']
+        team_validation = invalid_object(team_id, teams) 
+        invalid_team = team_validation[0]
+        team = team_validation[1] # None if invalid _team is true
+        invalid_users = False
+        users_in_team = False
+        
+        if invalid_team:
+            data['message'] = 'A team does not exist with the specified id'
+        elif team['liason'] != current_user['username']:
+            data['message'] = 'Only the liason of the team can perform this operation'
+        elif len(list_of_usernames) == 0:
+            data['message'] = "The members you would like to add to team must be provided"
+        elif team['status'] == "complete":
+            data['message'] = "The team selected already has the maximum number of members"
+        else:
+            for username in list_of_usernames:
+                student = student_users.find_one({"username": username})
+                if student is None:
+                    invalid_users = True
+                    break
+                elif username in team['teamMembers']:
+                    users_in_team = True
+                    break
+
+            team_param = team_params.find_one({"_id" : team['teamParamId']})
+            max_students = team_param['maximumNumberOfStudents']
+
+            if invalid_users:
+                data['message'] = "No student exists with the username: " + username
+            elif users_in_team: 
+                data['message'] = username + " is already a member of the team"
+            elif (len(list_of_usernames) + int(team['teamSize'])) > max_students:
+                data['message'] = "Maximum number of students is exceeded if all selected students are added to team"
+            else:
+                members = team['teamMembers'] + list_of_usernames
+                data['before'] = team['teamMembers']
+                teams.update_one(
+                    {
+                        "_id": team['_id']
+                    },
+                    {
+                        "$set": {"teamMembers": members}
+                    })
+                data['message'] = "Successfully added selected users to team"
+                data['after'] = teams.find_one({"_id" : team['_id']})['teamMembers']
+                data['status'] = 200
+    else: 
+        data['message'] = 'List of usernames and team must be provided!'  
+    resp = jsonify(data)
+    resp.status_code = data['status']
+    return resp
+
+#Validates object based on team_id and the specified db to search in
+def invalid_object(id, database):
+    invalid_id = False
+    try:
+        obj = database.find_one({"_id" : ObjectId(id)})
+        if obj is None:
+            invalid_id = True
+    except: 
+        invalid_id = True
+        obj= None
+    return (invalid_id, obj)
 
 
 if __name__ == "__main__":
