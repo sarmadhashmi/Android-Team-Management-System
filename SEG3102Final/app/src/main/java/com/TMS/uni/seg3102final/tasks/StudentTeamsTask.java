@@ -2,7 +2,9 @@ package com.TMS.uni.seg3102final.tasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,13 @@ public class StudentTeamsTask extends AsyncTask<Void, JSONObject, JSONObject> {
             URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/teams");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+
+            SharedPreferences settings = activity.getSharedPreferences("auth",
+                    Context.MODE_PRIVATE);
+            String token = settings.getString("access_token", "defaultvalue");
+
+            conn.setRequestProperty("Authorization", "jwt " + token);
+
             // Get response
             BufferedReader reader = null;
             if (conn.getResponseCode() / 100 == 2) {

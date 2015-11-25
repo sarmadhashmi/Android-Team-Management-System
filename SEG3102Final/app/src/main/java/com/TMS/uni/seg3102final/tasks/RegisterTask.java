@@ -65,11 +65,6 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
-        try {
-            TextView status = (TextView) activity.findViewById(R.id.register_status);
-            status.setText(response.getString("message"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
     }
 }

@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
-    public static final String IP_ADDRESS = "10.0.3.2";
+    public static final String IP_ADDRESS = "10.0.2.2";
     public ProgressDialog progress;
     ImageButton imgButton;
 

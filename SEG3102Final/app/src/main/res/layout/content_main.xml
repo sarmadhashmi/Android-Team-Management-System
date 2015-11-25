@@ -13,6 +13,15 @@
     tools:showIn="@layout/activity_main"
     android:orientation="vertical">
 
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/uottawa" />
+
+
     <EditText
         android:id="@+id/username"
         android:layout_width="fill_parent"
@@ -32,6 +41,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="invisible"
         android:text="@string/user_type">
         <RadioButton android:id="@+id/radio_instructor"
             android:layout_width="wrap_content"
@@ -53,9 +63,4 @@
         android:onClick="login"
         />
 
-    <TextView
-        android:id="@+id/register_status"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Placeholder"/>
 </LinearLayout>

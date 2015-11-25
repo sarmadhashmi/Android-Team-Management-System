@@ -2,6 +2,8 @@ package com.TMS.uni.seg3102final.tasks;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -71,11 +73,21 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
 
         ((MainActivity) activity).dismiss();
 
-        try {
-            TextView status = (TextView) activity.findViewById(R.id.register_status);
-            status.setText(response.getString("access_token"));
-            String userType = response.getString("user_type");
-            ((MainActivity) activity).loadOperations(userType);
+        try
+        {
+            String auth = response.getString("access_token");
+
+            if(response.getString("access_token") != null)
+            {
+                SharedPreferences settings = activity.getSharedPreferences("auth",
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("access_token", auth);
+                editor.commit();
+
+                String userType = response.getString("user_type");
+                ((MainActivity) activity).loadOperations(userType);
+            }
         } catch (JSONException e) {
             ((MainActivity) activity).displayError();
             e.printStackTrace();

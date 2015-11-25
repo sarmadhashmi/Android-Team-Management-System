@@ -2,6 +2,7 @@ package com.TMS.uni.seg3102final.tasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,12 @@ public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObjec
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
+
+            SharedPreferences settings = activity.getSharedPreferences("auth",
+                    Context.MODE_PRIVATE);
+            String token = settings.getString("access_token", "defaultvalue");
+
+            conn.setRequestProperty("Authorization", "jwt " + token);
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
             writer.write(credentials.toString());
