@@ -71,13 +71,11 @@ def auth_response_handler(access_token, identity):
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = {}
-    data['status'] = 404
     required_keys = ['username', 'password', 'email', 'first_name', 'last_name', 'user_type']
-    if not request.json:
-        data['message'] = 'No data was provided'
-    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys  
-
+    validation = validate_data_format(request, required_keys)
+    valid_format = validation[0]
+    data = validation[1]
+    if valid_format:
         username = request.json['username']
         password = request.json['password']
         email = request.json['email']
@@ -116,9 +114,6 @@ def register():
                         })
                 data['status'] = 200
                 data['message'] = 'Instructor successfully registered!'
-    else :
-        data['message'] = 'All required fields were not provided!'
-               
         
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -132,14 +127,14 @@ def protected():
 @app.route('/createTeamParams', methods=['POST'])
 @jwt_required()
 def create_team_params():
-    data = {}
-    user_id = current_identity['_id']
-    data['status'] = 404
-    if instructor_users.find_one({'_id': user_id}):
-        required_keys = ['course_code', 'course_section','minimum_num_students', 'maximum_num_students', 'deadline']
-        if not request.json:
-            data['message'] = 'No data was provided'
-        elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
+    user = instructor_users.find_one({'_id': current_identity['_id']})
+    required_keys = ['course_code', 'course_section','minimum_num_students', 'maximum_num_students', 'deadline']
+    validation = validate_data_format(request, required_keys)
+    valid_format = validation[0]
+    data = validation[1]
+
+    if valid_format:
+        if user:
                 course_code = request.json['course_code']
                 course_section = request.json['course_section']
                 minimum_number_of_students = request.json['minimum_num_students']
@@ -162,9 +157,7 @@ def create_team_params():
                     data['status'] = 200
                     data['message'] = 'Team Parameters were successfully created!'
         else:
-            data['message'] = 'All fields must be provided!'
-    else:
-        data['message'] = 'You do not have permission to create team parameters'
+            data['message'] = 'You do not have permission to create team parameters'
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
@@ -183,7 +176,6 @@ def get_team_params():
         row['course_section'] = course['courseSection']
         teamParams.append(row)
         
-        
     data['teamParams'] = teamParams
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -193,17 +185,17 @@ def get_team_params():
 @app.route('/createTeam', methods=['POST'])
 @jwt_required()
 def create_team():
-    data = {}
+
     required_keys = ['team_param_id', 'team_name', 'team_members']
-    user_id = current_identity['_id']
-    data['status'] = 404    
-    if not request.json:
-        data['message'] = 'No data was provided'
-    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys        
+    validation = validate_data_format(request, required_keys)
+    valid_format = validation[0]
+    data = validation[1]
+
+    if valid_format:
             team_param_id = request.json['team_param_id']
             team_name = request.json['team_name']
             team_members = request.json['team_members']
-            liason = student_users.find_one({"_id" : user_id})
+            liason = student_users.find_one({"_id" : current_identity['_id']})
             error = False
             if liason:
                 liason = liason['username'] 
@@ -262,8 +254,7 @@ def create_team():
                         })
                     data['status'] = 200
                     data['message'] = 'Team was successfully created!'
-    else:
-        data['message'] = 'All fields must be provided!'                
+    
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
@@ -432,7 +423,6 @@ def accept_members():
                 data['message'] = "Maximum number of students is exceeded if all selected students are added to team"
             else:
                 members = team['teamMembers'] + list_of_usernames
-                data['before'] = team['teamMembers']
                 teams.update_one(
                     {
                         "_id": team['_id']
@@ -440,8 +430,8 @@ def accept_members():
                     {
                         "$set": {"teamMembers": members}
                     })
+                #update status of team if size of members is max students
                 data['message'] = "Successfully added selected users to team"
-                data['after'] = teams.find_one({"_id" : team['_id']})['teamMembers']
                 data['status'] = 200
     else: 
         data['message'] = 'List of usernames and team must be provided!'  
@@ -460,6 +450,21 @@ def invalid_object(id, database):
         invalid_id = True
         obj= None
     return (invalid_id, obj)
+
+def validate_data_format (request, required_keys):
+    data = {}
+    data['status'] = 404   
+    valid_data = True 
+    if not request.json:
+        data['message'] = 'No data was provided'
+        valid_data = False
+    else:
+        valid_data = all(key in request.json for key in required_keys) # Check if request.json contains all the required keys  
+        if valid_data:
+            valid_data = "" not in request.json.viewvalues() # Check if request.json contains content for all values  
+        if valid_data == False:
+            data['message'] = 'All fields must be provided!' 
+    return (valid_data, data)
 
 
 if __name__ == "__main__":
