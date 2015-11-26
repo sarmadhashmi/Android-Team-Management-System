@@ -30,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         progress = new ProgressDialog(this);
-        imgButton =(ImageButton)findViewById(R.id.imageButton);
-        imgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "You download is resumed", Toast.LENGTH_LONG).show();
-            }
-        });
+        //imgButton =(ImageButton)findViewById(R.id.imageButton);
+        //imgButton.setOnClickListener(new View.OnClickListener() {
+          //  @Override
+            //public void onClick(View v) {
+              //  Toast.makeText(getApplicationContext(), "You download is resumed", Toast.LENGTH_LONG).show();
+            //}
+        //});
     }
 
     public void register(View view) {

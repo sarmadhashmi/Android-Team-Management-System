@@ -29,12 +29,6 @@
     <include layout="@layout/content_main" />
 
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
 
-        android:id="@+id/imageButton"
-        android:src="@drawable/icon_button_register"/>
 
 </android.support.design.widget.CoordinatorLayout>
