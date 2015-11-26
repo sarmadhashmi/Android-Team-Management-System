@@ -264,6 +264,27 @@ def create_team():
     resp.status_code = data['status']
     return resp
 
+
+@app.route('/students', methods=['GET'])
+def get_students():
+    data = {}
+    data['status'] = 200
+    list_of_students = []
+    for row in student_users.find():
+        obj = {
+            "_id": str(row['_id']),
+            "username": row['username'],
+            "firstName": row['firstName'],
+            "lastName": row['lastName'],
+            "programOfStudy": row['programOfStudy'],
+            "email": row['email']
+            }
+        list_of_students.append(obj)
+    data['students'] = list_of_students
+    resp = jsonify(data)
+    resp.status_code = data['status']
+    return resp
+
 #Use case : Visualize student Teams
 @app.route('/teams', methods=['GET'])
 @jwt_required()
