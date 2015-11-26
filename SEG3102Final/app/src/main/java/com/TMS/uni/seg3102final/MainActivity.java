@@ -86,17 +86,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadOperations(String type) {
+        Intent intent;
 
-        if(type.equals("student")) {
-            Intent intent = new Intent(this, StudentOperations.class);
+        if(type.equals("instructor")) {
+            startActivity(new Intent(this, InstructorOperations.class));
+        }else if(type.equals("student")) {
+            intent = new Intent(this, StudentOperations.class);
+            intent.putExtra("isLiason", false);
             startActivity(intent);
-        }else if(type.equals("instructor"))
-        {
-            Intent intent = new Intent(this, InstructorOperations.class);
+        }else if(type.equals("liason")) {
+            intent = new Intent(this, StudentOperations.class);
+            intent.putExtra("isLiason", true);
             startActivity(intent);
-        }else if(type.equals("liason"))
-        {
-
         }
     }
 

@@ -28,16 +28,9 @@ public class StudentOperations extends Activity {
 
         initList();
 
-        // We get the ListView component from the layout
         lv = (ListView) findViewById(R.id.listView);
 
-        // This is a simple adapter that accepts as parameter
-        // Context
-        // Data list
-        // The row layout that is used during the row creation
-        // The keys used to retrieve the data
-        // The View id used to show the data. The key number and the view id must match
-        SimpleAdapter simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[]{"planet"}, new int[]{android.R.id.text1});
+        SimpleAdapter simpleAdpt = new SimpleAdapter(this, operationsList, android.R.layout.simple_list_item_1, new String[]{"operation"}, new int[]{android.R.id.text1});
 
         lv.setAdapter(simpleAdpt);
 
@@ -45,11 +38,10 @@ public class StudentOperations extends Activity {
 
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position, long id) {
 
-                // We know the View is a TextView so we can cast it
                 TextView clickedView = (TextView) view;
                 Intent intent = null;
 
-                Toast.makeText(StudentOperations.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(StudentOperations.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
 
                 if(clickedView.getText().equals("Create Team")) {
                     intent = new Intent(StudentOperations.this, CreateTeam.class);
@@ -66,26 +58,25 @@ public class StudentOperations extends Activity {
         });
     }
 
-    List<Map<String, String>> planetsList = new ArrayList<Map<String, String>>();
+    List<Map<String, String>> operationsList = new ArrayList<Map<String, String>>();
 
 
     private void initList() {
         // We populate the planets
+        boolean isLiason = getIntent().getBooleanExtra("isLiason", false);
 
-        planetsList.add(createPlanet("planet", "Create Team"));
-        planetsList.add(createPlanet("planet", "Join Team"));
-        planetsList.add(createPlanet("planet", "Accept New Students"));
+        operationsList.add(createOperation("operation", "Create Team"));
+        operationsList.add(createOperation("operation", "Join Team"));
+        if(isLiason)
+            operationsList.add(createOperation("operation", "Accept New Students"));
 
     }
 
+    private HashMap<String, String> createOperation(String key, String name) {
+        HashMap<String, String> operation = new HashMap<String, String>();
+        operation.put(key, name);
 
-    private HashMap<String, String> createPlanet(String key, String name) {
-        HashMap<String, String> planet = new HashMap<String, String>();
-        planet.put(key, name);
-
-        return planet;
-
-
+        return operation;
     }
 
 

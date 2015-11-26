@@ -29,7 +29,9 @@ def authenticate(username, password):
     user_type = "student"
     if user is None:
         user = instructor_users.find_one({"username": username})
-        user_type = "instructor"        
+        user_type = "instructor"
+    elif teams.find_one({"liason": username}):
+        user_type = "liason"
     if user:
         user['type'] = user_type
         passMatch = bcrypt.hashpw(password.encode('utf-8'), user['password'].encode('utf-8')) == user['password'].encode('utf-8')
