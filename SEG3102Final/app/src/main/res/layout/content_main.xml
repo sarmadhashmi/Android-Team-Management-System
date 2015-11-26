@@ -36,24 +36,47 @@
         android:hint="@string/enter_password"
         android:inputType="textPassword"/>
 
-
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        android:text="@string/user_type">
-        <RadioButton android:id="@+id/radio_instructor"
-            android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/registerLayout">
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/instructor"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/radio_student"
-            android:layout_width="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"/>
+        <EditText
+            android:id="@+id/firstName"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/student"
-            android:onClick="onRadioButtonClicked"/>
-    </RadioGroup>
+            android:hint="First Name"
+            android:inputType="text"/>
+        <EditText
+            android:id="@+id/lastName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Last Name"
+            android:inputType="text"/>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/radio_group_user"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:text="@string/user_type">
+            <RadioButton android:id="@+id/radio_instructor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/instructor"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/radio_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/student"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+        </LinearLayout>
     <LinearLayout android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
