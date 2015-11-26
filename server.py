@@ -202,7 +202,10 @@ def create_team():
                 team_members.append(liason)
             else:
                 error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
-            error = error or invalid_object(team_param_id, team_params)[0]
+            valid_info = invalid_object(team_param_id, team_params)
+            error = error or valid_info[0]
+            teamParam = valid_info[1]
+
             if error:
                 data['message'] = "No team parameter exists for the given id"
             elif len(team_members) > teamParam['maximumNumberOfStudents']:
@@ -301,10 +304,11 @@ def get_incomplete_teams():
 def join_teams():
     data = {}
     required_keys = ['team_ids']
-    data['status'] = 404    
-    if not request.json:
-        data['message'] = 'No data was provided'
-    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys   
+    validation = validate_data_format(request, required_keys)
+    valid_format = validation[0]
+    data = validation[1]
+
+    if valid_format:
         team_ids = request.json['team_ids']
         #Check if team_ids are valid
         invalid_team_ids = False
@@ -335,8 +339,6 @@ def join_teams():
                     })
             data['status'] = 200
             data['message'] = 'Successfully joined teams'
-    else: 
-        data['message'] = 'List of teams was not provided!'  
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
@@ -377,15 +379,15 @@ def view_requested_members():
 @app.route('/acceptMembers', methods=['POST'])
 @jwt_required()
 def accept_members():
-    data = {}
-    required_keys = ['team_id','list_of_usernames']
-    data['status'] = 404    
     current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
-    if not request.json:
-        data['message'] = 'No data was provided'
-    elif current_user is None:
+    required_keys = ['team_id','list_of_usernames']
+    validation = validate_data_format(request, required_keys)
+    valid_format = validation[0]
+    data = validation[1]
+
+    if current_user is None:
         data['message'] = 'You do not have permission to accept new members'
-    elif all(key in request.json for key in required_keys):        # Check if request.json contains all the required keys  
+    elif valid_format:  
         team_id = request.json['team_id']
         list_of_usernames = request.json['list_of_usernames']
         team_validation = invalid_object(team_id, teams) 
@@ -433,8 +435,6 @@ def accept_members():
                 #update status of team if size of members is max students
                 data['message'] = "Successfully added selected users to team"
                 data['status'] = 200
-    else: 
-        data['message'] = 'List of usernames and team must be provided!'  
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
