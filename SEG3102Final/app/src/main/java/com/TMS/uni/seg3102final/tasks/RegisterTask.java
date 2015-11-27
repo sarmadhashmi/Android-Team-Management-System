@@ -39,6 +39,7 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             String f_name = params[3];
             String l_name = params[4];
             String userType = params[5];
+            String pgmStudy = params[6];
 
             JSONObject registerationInformation = new JSONObject();
             registerationInformation.put("username", username);
@@ -47,6 +48,7 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             registerationInformation.put("first_name", f_name);
             registerationInformation.put("last_name", l_name);
             registerationInformation.put("user_type", userType);
+            registerationInformation.put("programOfStudy", pgmStudy);
 
             System.out.println(registerationInformation.toString(4));
 
@@ -90,11 +92,6 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
     protected void onPostExecute(JSONObject response) {
         ((MainActivity) activity).dismiss();
 
-try {
-    System.out.println(response.toString(4));
-}catch (Exception e){
-
-}
         try
         {
             if(response.has("message"))

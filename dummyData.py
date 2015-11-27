@@ -93,14 +93,14 @@ def dummy_data():
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents" : 2,
                     "maximumNumberOfStudents" : 4,
-                    "deadline" : "02/11/2015 12:54"
+                    "deadline" : "02/11/2017 12:54"
                 },
                 {
                     "InstructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "02/11/2015 12:54"
+                    "deadline": "02/11/2017 12:54"
                 }
                 , True)
 
@@ -123,7 +123,7 @@ def dummy_data():
 
     #Teams
     team_params_1 = team_params.find_one({"courseId": course_3101['_id']})
-    team_params_2 = team_params.find_one({"courseId": course_3101['_id']})
+    team_params_2 = team_params.find_one({"courseId": course_3102['_id']})
     teams.replace_one(
                 {
                     "teamName" : "SnakeFour"

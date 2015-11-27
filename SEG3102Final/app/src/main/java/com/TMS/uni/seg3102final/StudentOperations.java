@@ -70,8 +70,11 @@ public class StudentOperations extends AppCompatActivity {
 
         operationsList.add(createOperation("operation", "Create Team"));
         operationsList.add(createOperation("operation", "Join Team"));
-        if(isLiason)
+        if(isLiason){
             operationsList.add(createOperation("operation", "Accept New Students"));
+            setTitle("Liason Operations");
+        }
+
 
     }
 

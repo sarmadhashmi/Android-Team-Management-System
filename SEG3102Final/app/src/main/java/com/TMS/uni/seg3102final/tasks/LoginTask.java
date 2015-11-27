@@ -76,6 +76,8 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             return MainActivity.getObj("message", "The URL is not in the correct format!");
         } catch (IOException e) {
             return MainActivity.getObj("message", "Could not get data from server!");
+        }catch (Exception e) {
+            return MainActivity.getObj("message", "Unexpected Error");
         }
     }
 

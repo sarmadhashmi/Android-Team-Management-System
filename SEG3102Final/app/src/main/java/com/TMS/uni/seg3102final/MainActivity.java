@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     public ProgressDialog progress;
     private boolean register = false;
     LinearLayout registerLayout;
-    ImageButton imgButton;
+    RadioGroup rg;
+    View pgmOfStudy;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +49,39 @@ public class MainActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("loggedOut")) {
             Toast.makeText(getApplicationContext(), "Logged out!", Toast.LENGTH_SHORT);
         }
+
+        pgmOfStudy = findViewById(R.id.programOfStudy);
+
         setSupportActionBar(toolbar);
         progress = new ProgressDialog(this);
         registerLayout = (LinearLayout) findViewById(R.id.registerLayout);
+        rg = (RadioGroup)findViewById(R.id.radio_group_user);
+
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.radio_instructor:
+                        pgmOfStudy.setVisibility(View.GONE);
+                        break;
+
+                    case R.id.radio_student:
+                        pgmOfStudy.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+
+            }
+        });
+
+
+
     }
 
     public void dismiss() {
         progress.dismiss();
     }
+
 
 
     void register(){
@@ -63,11 +90,16 @@ public class MainActivity extends AppCompatActivity {
         EditText email = (EditText) findViewById(R.id.email);
         EditText firstName = (EditText) findViewById(R.id.firstName);
         EditText lastName = (EditText) findViewById(R.id.lastName);
+        EditText pgmStudy = (EditText) findViewById(R.id.programOfStudy);
 
-        RadioGroup rg = (RadioGroup)findViewById(R.id.radio_group_user);
-        String radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+        String radioValue;
 
-        String[] params = {username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString(), radioValue};
+        try{
+        radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+        }catch(Exception e){
+            radioValue = "null";
+        }
+        String[] params = {username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString(), radioValue, pgmStudy.getText().toString()};
 
         progress.setTitle("Register");
         progress.setMessage("Registering Please Wait...");
@@ -97,13 +129,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    void reinit()
+    {
+        pgmOfStudy.setVisibility(View.GONE);
+        ((TextView)findViewById (R.id.username)).setText("");
+        ((TextView)findViewById (R.id.password)).setText("");
+        ((TextView)findViewById (R.id.email)).setText("");
+        ((TextView)findViewById (R.id.firstName)).setText("");
+        ((TextView)findViewById (R.id.lastName)).setText("");
+    }
+
     public void invert(View view) {
 
+        reinit();
 
         if (registerLayout.getVisibility() == View.GONE) {
             Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
             registerLayout.startAnimation(slideUp);
             registerLayout.setVisibility(View.VISIBLE);
+            pgmOfStudy.setVisibility(View.GONE);
+            rg.clearCheck();
             ((TextView)findViewById (R.id.inverseButton)).setText("Login?");
             ((TextView)findViewById (R.id.actionButton)).setText("Register");
 
@@ -127,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setMessage(message);
 
         // Setting Icon to Dialog
-//        alertDialog.setIcon(R.drawable.tick);
+        // alertDialog.setIcon(R.drawable.tick);
 
         // Setting OK Button
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
