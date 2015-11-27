@@ -30,4 +30,6 @@
     <string name="addMembers">+</string>
     <string name="added_members">Students currently in team</string>
     <string name="select_student">Add students</string>
+    <string name="action_type">Login</string>
+    <string name="action_type_inverse">Register?</string>
 </resources>

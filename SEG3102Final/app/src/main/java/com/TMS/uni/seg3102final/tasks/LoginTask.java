@@ -35,7 +35,6 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
 
     @Override
     protected JSONObject doInBackground(String[] params) {
-        if (params.length < 2) throw new InvalidParameterException("Not enough parameters");
         try {
             String username = params[0];
             String password = params[1];
@@ -70,21 +69,22 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             reader.close();
             return new JSONObject(str.toString());
         } catch (ConnectException | SocketTimeoutException e) {
-            return MainActivity.getObj("description", "Seems like the server is down or cannot be reached for some reason at this moment!");
+            return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {
-            return MainActivity.getObj("description", "The returned data was not in the correct format!");
+            return MainActivity.getObj("message", "The returned data was not in the correct format!");
         } catch (MalformedURLException e) {
-            return MainActivity.getObj("description", "The URL is not in the correct format!");
+            return MainActivity.getObj("message", "The URL is not in the correct format!");
         } catch (IOException e) {
-            return MainActivity.getObj("description", "Could not get data from server!");
+            return MainActivity.getObj("message", "Could not get data from server!");
         }
     }
 
     protected void onPostExecute(JSONObject response) {
         ((MainActivity) activity).dismiss();
+
         try
         {
-            if(response.has("access_token") && response.getString("access_token") != null)
+            if(response.has("access_token"))
             {
                 SharedPreferences settings = activity.getSharedPreferences("auth",
                         Context.MODE_PRIVATE);
@@ -95,9 +95,10 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
                 String userType = response.getString("user_type");
                 ((MainActivity) activity).loadOperations(userType);
             } else {
-                Toast.makeText(activity.getApplicationContext(), response.getString("description"), Toast.LENGTH_LONG).show();
+                ((MainActivity) activity).displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
+            ((MainActivity) activity).displayMessage("Unexpected Error");
             e.printStackTrace();
         }
     }

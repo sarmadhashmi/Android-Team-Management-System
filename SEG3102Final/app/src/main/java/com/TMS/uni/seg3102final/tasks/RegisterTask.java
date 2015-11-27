@@ -38,7 +38,7 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             String email = params[2];
             String f_name = params[3];
             String l_name = params[4];
-            String userType = params[4];
+            String userType = params[5];
 
             JSONObject registerationInformation = new JSONObject();
             registerationInformation.put("username", username);
@@ -48,18 +48,14 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             registerationInformation.put("last_name", l_name);
             registerationInformation.put("user_type", userType);
 
+            System.out.println(registerationInformation.toString(4));
+
             URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/register");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
-            SharedPreferences settings = activity.getSharedPreferences("auth",
-                    Context.MODE_PRIVATE);
-            String token = settings.getString("access_token", "defaultvalue");
-
-            conn.setRequestProperty("Authorization", "jwt " + token);
 
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -93,14 +89,20 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
 
     protected void onPostExecute(JSONObject response) {
         ((MainActivity) activity).dismiss();
+
+try {
+    System.out.println(response.toString(4));
+}catch (Exception e){
+
+}
         try
         {
-            if(response.getString("message") != null)
+            if(response.has("message"))
             {
-                ((MainActivity) activity).registerMessage(response.getString("message"));
+                ((MainActivity) activity).displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
-            ((MainActivity) activity).registerMessage("Error Unable to Connect to Server");
+            ((MainActivity) activity).displayMessage("Unexpected Error");
             e.printStackTrace();
         }
     }
