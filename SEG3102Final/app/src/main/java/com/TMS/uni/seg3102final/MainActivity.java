@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.tasks.LoginTask;
@@ -43,63 +44,71 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         progress = new ProgressDialog(this);
         registerLayout = (LinearLayout) findViewById(R.id.registerLayout);
-        //imgButton =(ImageButton)findViewById(R.id.imageButton);
-        //imgButton.setOnClickListener(new View.OnClickListener() {
-          //  @Override
-            //public void onClick(View v) {
-              //  Toast.makeText(getApplicationContext(), "You download is resumed", Toast.LENGTH_LONG).show();
-            //}
-        //});
-    }
-
-    public void register(View view) {
-
-        if (registerLayout.getVisibility() == View.GONE) {
-            Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
-            registerLayout.startAnimation(slideUp);
-            registerLayout.setVisibility(View.VISIBLE);
-        }else{
-
-            EditText username = (EditText) findViewById(R.id.username);
-            EditText password = (EditText) findViewById(R.id.password);
-            EditText email = (EditText) findViewById(R.id.email);
-            EditText firstName = (EditText) findViewById(R.id.firstName);
-            EditText lastName = (EditText) findViewById(R.id.lastName);
-
-            RadioGroup rg = (RadioGroup)findViewById(R.id.radio_group_user);
-            String radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
-
-            String[] params = {radioValue, username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString()};
-
-            progress.setTitle("Register");
-            progress.setMessage("Registering Please Wait...");
-            progress.show();
-            new RegisterTask(this).execute(params);
-        }
-
     }
 
     public void dismiss() {
         progress.dismiss();
     }
 
-    public void login(View view) {
-        if (registerLayout.getVisibility() == View.GONE) {
-            EditText username = (EditText) findViewById(R.id.username);
-            EditText password = (EditText) findViewById(R.id.password);
-            String[] params = {username.getText().toString(), password.getText().toString()};
 
-            progress.setTitle("Log in");
-            progress.setMessage("Logging in...");
-            progress.show();
-            new LoginTask(this).execute(params);
+    void register(){
+        EditText username = (EditText) findViewById(R.id.username);
+        EditText password = (EditText) findViewById(R.id.password);
+        EditText email = (EditText) findViewById(R.id.email);
+        EditText firstName = (EditText) findViewById(R.id.firstName);
+        EditText lastName = (EditText) findViewById(R.id.lastName);
+
+        RadioGroup rg = (RadioGroup)findViewById(R.id.radio_group_user);
+        String radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+
+        String[] params = {username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString(), radioValue};
+
+        progress.setTitle("Register");
+        progress.setMessage("Registering Please Wait...");
+        progress.show();
+        new RegisterTask(this).execute(params);
+    }
+
+
+    void login(){
+        EditText username = (EditText) findViewById(R.id.username);
+        EditText password = (EditText) findViewById(R.id.password);
+        String[] params = {username.getText().toString(), password.getText().toString()};
+
+        progress.setTitle("Log in");
+        progress.setMessage("Logging in...");
+        progress.show();
+        new LoginTask(this).execute(params);
+    }
+
+    public void performAction(View view) {
+
+        if (registerLayout.getVisibility() == View.GONE){
+            login();
+        }else{
+            register();
+        }
+
+    }
+
+    public void invert(View view) {
+
+
+        if (registerLayout.getVisibility() == View.GONE) {
+            Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+            registerLayout.startAnimation(slideUp);
+            registerLayout.setVisibility(View.VISIBLE);
+            ((TextView)findViewById (R.id.inverseButton)).setText("Login?");
+            ((TextView)findViewById (R.id.actionButton)).setText("Register");
+
         }else{
             Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
             registerLayout.startAnimation(slideDown);
             registerLayout.setVisibility(View.GONE);
+            ((TextView)findViewById (R.id.inverseButton)).setText("Register?");
+            ((TextView)findViewById (R.id.actionButton)).setText("Login");
         }
     }
-
 
     public void displayMessage(String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(

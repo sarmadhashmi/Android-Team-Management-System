@@ -29,8 +29,8 @@
     <include layout="@layout/content_main" />
 
     <Button
-        android:text="Register?"
-        android:id="@+id/registerButton"
+        android:text="@string/action_type_inverse"
+        android:id="@+id/inverseButton"
         android:layout_gravity="bottom|right"
         android:background="#8f001a"
         android:textColor="#FFFFFF"
@@ -38,7 +38,7 @@
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="register" />
+        android:onClick="invert" />
 
 
 

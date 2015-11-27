@@ -38,7 +38,7 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             String email = params[2];
             String f_name = params[3];
             String l_name = params[4];
-            String userType = params[4];
+            String userType = params[5];
 
             JSONObject registerationInformation = new JSONObject();
             registerationInformation.put("username", username);
@@ -48,18 +48,14 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             registerationInformation.put("last_name", l_name);
             registerationInformation.put("user_type", userType);
 
+            System.out.println(registerationInformation.toString(4));
+
             URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/register");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
-            SharedPreferences settings = activity.getSharedPreferences("auth",
-                    Context.MODE_PRIVATE);
-            String token = settings.getString("access_token", "defaultvalue");
-
-            conn.setRequestProperty("Authorization", "jwt " + token);
 
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
