@@ -1,6 +1,9 @@
 package com.TMS.uni.seg3102final;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,6 +29,8 @@ public class AcceptNewStudents extends AppCompatActivity {
     public ProgressDialog progress;
     ListView lv;
     ListItemModel[] modelItems;
+    Dialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,10 @@ public class AcceptNewStudents extends AppCompatActivity {
         progress.setMessage("Retrieving Student Requests...");
         //progress.show();
         //new StudentRequestsTask(this).execute();
+
+
+        dialog = onCreateDialogSingleChoice();
+        dialog.show();
 
         /* temp until integrated with Backend */
             modelItems = new ListItemModel[5];
@@ -100,4 +109,43 @@ public class AcceptNewStudents extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public Dialog onCreateDialogSingleChoice() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+        CharSequence[] array = {"SnakeTeam", "SegFour", "SegSix"};
+
+
+        builder.setTitle("Select Team")
+
+                .setSingleChoiceItems(array, 1, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+
+                    }
+                })
+
+                // Set the action buttons
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        return builder.create();
+    }
+
+
 }
