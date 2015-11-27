@@ -45,6 +45,11 @@
             android:name=".AcceptNewStudents"
             android:label="@string/title_activity_accept_new_students" >
         </activity>
+        <activity
+            android:name=".SelectTeamParameters"
+            android:label="@string/title_activity_select_team_parameters" >
+        </activity>
+
     </application>
 
 </manifest>

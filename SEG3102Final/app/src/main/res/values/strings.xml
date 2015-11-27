@@ -14,6 +14,7 @@
     <string name="title_activity_instructor_operations">Instructor Operations</string>
     <string name="title_activity_visualize_student_teams">Visualize Student Teams</string>
     <string name="title_activity_setup_parameters">Setup Parameters</string>
+    <string name="title_activity_select_team_parameters">Select Team Parameters</string>
     <string name="course_code">Course Code:</string>
     <string name="course_section">Course Section:</string>
     <string name="course_code_example">Example: SEG 3102</string>
@@ -25,4 +26,8 @@
     <string name="deadline">Deadline:</string>
     <string name="deadline_example">Example: dd/MM/yyyy HH:MM</string>
     <string name="setup_parameters">Setup parameters</string>
+    <string name="team_name">Team Name:</string>
+    <string name="addMembers">+</string>
+    <string name="added_members">Students currently in team</string>
+    <string name="select_student">Add students</string>
 </resources>

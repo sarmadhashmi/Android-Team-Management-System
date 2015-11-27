@@ -15,26 +15,65 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Team Name"/>
+            android:text="@string/team_name"/>
         <EditText
             android:id="@+id/teamName"
-            android:hint="Example: SegFour"
             android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"/>
     </LinearLayout>
-
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Members +" />
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:text="@string/select_student"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/students"
+            android:layout_weight="5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:spinnerMode="dropdown" />
+        <TextView android:id="@+id/no_students_empty"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:textStyle="italic"
+            android:text="No students currently available to add to the team." />
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/addMembers"
+            android:onClick="addMember"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:text="@string/added_members"/>
 
-
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/added_members" />
+    <TextView android:id="@+id/no_members_empty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:textStyle="italic"
+        android:text="No members currently in team." />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Create Team"
+        android:text="@string/title_activity_create_team"
         android:onClick="createTeam"/>
 
 </LinearLayout>

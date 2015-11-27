@@ -171,17 +171,23 @@ def get_team_params():
     data['status'] = 200
     teamParams = []
     for row in team_params.find():
-        row['_id'] = str(row['_id'])
         course = courses.find_one({'_id': row['courseId']})
-        row['courseId'] = str(row['courseId'])
-        row['course_code'] = course['courseCode']
-        row['course_section'] = course['courseSection']
-        teamParams.append(row)
-        
+        instructor = instructor_users.find_one({'_id': row['InstructorId']})        
+        obj = {
+            "_id": str(row['_id']),
+            "courseId": str(course['_id']),
+            "InstructorId": str(instructor['_id']),
+            "course_code": course['courseCode'],
+            "course_section": course['courseSection'],
+            "instructor_name": instructor['firstName'] + ' ' + instructor['lastName'],
+            "deadline": row['deadline'],
+            "minimumNumberOfStudents": row['minimumNumberOfStudents'],
+            "maximumNumberOfStudents": row['maximumNumberOfStudents']           
+        }
+        teamParams.append(obj)        
     data['teamParams'] = teamParams
     resp = jsonify(data)
     resp.status_code = data['status']
-
     return resp
 
 @app.route('/createTeam', methods=['POST'])
@@ -199,18 +205,16 @@ def create_team():
             team_members = request.json['team_members']
             liason = student_users.find_one({"_id" : current_identity['_id']})
             error = False
-            if liason:
+            if liason['username'] not in team_members:
                 liason = liason['username'] 
                 team_members.append(liason)
-            else:
-                error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
+            #else: I don't understand this part - Sarmad
+                #error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
             valid_info = invalid_object(team_param_id, team_params)
             error = error or valid_info[0]
             teamParam = valid_info[1]
-
-            if error:
-                data['message'] = "No team parameter exists for the given id"
-            elif len(team_members) > teamParam['maximumNumberOfStudents']:
+            
+            if len(team_members) > teamParam['maximumNumberOfStudents']:
                 data['message'] = "You have selected too many members, the maximum number of members allowed is "+ str(teamParam['maximumNumberOfStudents']) 
             elif len(team_members) < teamParam['minimumNumberOfStudents']:
                 data['message'] = "You did not provide enough members, the minimum number of members allowed is "+ str(teamParam['minimumNumberOfStudents'])
@@ -240,7 +244,7 @@ def create_team():
                 #If createTeam is still true, then we can insert a new team into the database
                 if createTeam:
                     #Check if members is less than max team size
-                    less_than_max = len(members) <teamParam['maximumNumberOfStudents']
+                    less_than_max = len(members) < teamParam['maximumNumberOfStudents']
                     if less_than_max:
                         status = "incomplete"
                     else:
@@ -266,6 +270,7 @@ def create_team():
 
 
 @app.route('/students', methods=['GET'])
+@jwt_required()
 def get_students():
     data = {}
     data['status'] = 200

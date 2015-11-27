@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.R;
@@ -13,9 +14,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
@@ -75,16 +80,19 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ConnectException | SocketTimeoutException e) {
+            return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
+        } catch (JSONException e) {
+            return MainActivity.getObj("message", "The returned data was not in the correct format!");
+        } catch (MalformedURLException e) {
+            return MainActivity.getObj("message", "The URL is not in the correct format!");
+        } catch (IOException e) {
+            return MainActivity.getObj("message", "Could not get data from server!");
         }
-        return null;
     }
 
     protected void onPostExecute(JSONObject response) {
-
         ((MainActivity) activity).dismiss();
-
         try
         {
             if(response.getString("message") != null)
@@ -95,10 +103,5 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             ((MainActivity) activity).registerMessage("Error Unable to Connect to Server");
             e.printStackTrace();
         }
-
-
-
-
-
     }
 }
