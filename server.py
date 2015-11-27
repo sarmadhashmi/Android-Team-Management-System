@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from flask import Flask
@@ -71,6 +72,15 @@ def auth_response_handler(access_token, identity):
         'user_type': identity['type']
     })
 
+@jwt.jwt_error_handler
+def error_response_handler(error):
+    return jsonify(OrderedDict([
+        ('status_code', error.status_code),
+        ('error', error.error),
+        ('message', error.description),
+    ])), error.status_code, error.headers
+
+
 @app.route('/register', methods=['POST'])
 def register():
     required_keys = ['username', 'password', 'email', 'first_name', 'last_name', 'user_type']
@@ -116,6 +126,9 @@ def register():
                         })
                 data['status'] = 200
                 data['message'] = 'Instructor successfully registered!'
+            else:
+                data['message'] = 'The user type specified is not valid'
+
         
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -150,7 +163,7 @@ def create_team_params():
                     data['message'] = "The course code with the specified section does not exist"
                 else:
                     res = team_params.insert_one({
-                            "instructorId" : user_id,
+                            "instructorId" : user['_id'],
                             "courseId" : course['_id'],
                             "minimumNumberOfStudents": minimum_number_of_students,
                             "maximumNumberOfStudents": minimum_number_of_students,
@@ -204,17 +217,22 @@ def create_team():
             team_name = request.json['team_name']
             team_members = request.json['team_members']
             liason = student_users.find_one({"_id" : current_identity['_id']})
-            error = False
-            if liason['username'] not in team_members:
-                liason = liason['username'] 
-                team_members.append(liason)
-            #else: I don't understand this part - Sarmad
-                #error = True #### TEMP SOLUTION FOR ONLY LETTING STUDENTS USE THIS FUNCTION!!
+            invalid_liason = True
+            if liason:
+                liason = liason['username']
+                invalid_liason = False
+                if liason not in team_members:
+                    team_members.append(liason) #Add liason username if it is not already in 
+            
             valid_info = invalid_object(team_param_id, team_params)
-            error = error or valid_info[0]
+            invalid_team_param = valid_info[0]
             teamParam = valid_info[1]
             
-            if len(team_members) > teamParam['maximumNumberOfStudents']:
+            if invalid_liason:
+                data['message'] = "You do not have permission to perform this operation"
+            elif invalid_team_param:
+                data['message'] = "No team parameter exists for the given team parameter ID"
+            elif len(team_members) > teamParam['maximumNumberOfStudents']:
                 data['message'] = "You have selected too many members, the maximum number of members allowed is "+ str(teamParam['maximumNumberOfStudents']) 
             elif len(team_members) < teamParam['minimumNumberOfStudents']:
                 data['message'] = "You did not provide enough members, the minimum number of members allowed is "+ str(teamParam['minimumNumberOfStudents'])
@@ -466,6 +484,43 @@ def accept_members():
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
+
+#Return the teams with the specified team parameter 
+@app.route('/teamsInTeamParam', methods=['GET'])
+@jwt_required()
+def get_teams_with_teamParam():
+    data = {}
+    data['status'] = 404
+    current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
+    if current_user is None:
+        data['message'] = "You do not have permission to perform this operation"
+    elif 'teamParam_id' in request.args:
+        teamParam_id = request.args['teamParam_id']
+        invalid_teamParam_id= invalid_object(teamParam_id, team_params)[0]
+
+        if invalid_teamParam_id:
+            data['message'] = "A team Parameter with id: " + teamParam_id + " does not exist"
+        else:
+            list_of_teams = teams.find({'teamParamId' : teamParam_id})
+            list_of_teams2 = []
+            for team in list_of_teams:
+                team['teamParamId'] = str(team['teamParamId'])
+                team['_id'] = str(team['_id'])
+                list_of_teams2.append(team)
+
+            data['list_of_teams'] = list_of_teams2
+            data['status'] = 200
+            
+    else: 
+        data['message'] = "The team Parameter was not provided"
+
+
+    resp = jsonify(data)
+    resp.status_code = data['status']
+
+    return resp
+
+
 
 #Validates object based on team_id and the specified db to search in
 def invalid_object(id, database):

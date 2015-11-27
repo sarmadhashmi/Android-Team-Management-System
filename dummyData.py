@@ -93,14 +93,14 @@ def dummy_data():
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents" : 2,
                     "maximumNumberOfStudents" : 4,
-                    "deadline" : "02/11/2015 12:54"
+                    "deadline" : "02/11/2017 12:54"
                 },
                 {
                     "InstructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "02/11/2015 12:54"
+                    "deadline": "02/11/2017 12:54"
                 }
                 , True)
 
