@@ -1,12 +1,16 @@
 package com.TMS.uni.seg3102final;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.Models.ListItemModel;
 import com.TMS.uni.seg3102final.adapters.CustomDataItemAdapter;
@@ -67,5 +71,9 @@ public class JoinTeam extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
     }
 }

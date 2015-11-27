@@ -1,9 +1,12 @@
 package com.TMS.uni.seg3102final;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("loggedOut")) {
+            Toast.makeText(getApplicationContext(), "Logged out!", Toast.LENGTH_SHORT);
+        }
         setSupportActionBar(toolbar);
         progress = new ProgressDialog(this);
         registerLayout = (LinearLayout) findViewById(R.id.registerLayout);
@@ -149,28 +155,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public static JSONObject getObj(String key, String value) {
         try {
             JSONObject obj = new JSONObject();
@@ -180,5 +164,16 @@ public class MainActivity extends AppCompatActivity {
             je.printStackTrace();
         }
         return null;
+    }
+
+    public static void logout(MenuItem m, AppCompatActivity a) {
+        SharedPreferences settings = a.getSharedPreferences("auth", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("access_token", null);
+        editor.commit();
+        Intent intent = new Intent(a, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Toast.makeText(a, "Logged out!", Toast.LENGTH_SHORT);
+        a.startActivity(intent);
     }
 }

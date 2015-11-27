@@ -111,4 +111,8 @@ public class SelectTeamParameters extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
+    }
 }
