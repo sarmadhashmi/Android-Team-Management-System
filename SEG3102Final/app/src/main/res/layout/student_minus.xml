@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_minus"
+    tools:context="com.TMS.uni.seg3102final.CreateTeam">
+
+    <Button
+        android:id="@+id/remove_member"
+        android:text="Remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        />
+    <TextView
+        android:id="@+id/student_name"
+        android:layout_toLeftOf="@+id/remove_member"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="asdlnasld" />
+</RelativeLayout>

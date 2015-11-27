@@ -43,7 +43,7 @@ def dummy_data():
                             "username": "reqTest",
                             "password": server.encrypt("test"),
                             "email" : "snake2@uottawa.ca",
-                            "firstName" : "Student2",
+                            "firstName" : "reqTest",
                             "lastName" : "Tester2",
                             "programOfStudy" : "SEG"
                             }
@@ -93,14 +93,14 @@ def dummy_data():
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents" : 2,
                     "maximumNumberOfStudents" : 4,
-                    "deadline" : "November 2, 2015"
+                    "deadline" : "02/11/2015 12:54"
                 },
                 {
                     "InstructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "November 2, 2015"
+                    "deadline": "02/11/2015 12:54"
                 }
                 , True)
 
@@ -110,14 +110,14 @@ def dummy_data():
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "November 2, 2015"
+                    "deadline": "20/05/2017 23:59"
                 },
                 {
                     "InstructorId" : instructor['_id'],
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "November 2, 2015"
+                    "deadline": "20/05/2017 23:59"
                 }
                 , True)
 

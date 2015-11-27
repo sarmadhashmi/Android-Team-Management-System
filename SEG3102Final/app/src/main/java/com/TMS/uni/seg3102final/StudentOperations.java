@@ -44,7 +44,7 @@ public class StudentOperations extends Activity {
                 //Toast.makeText(StudentOperations.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
 
                 if(clickedView.getText().equals("Create Team")) {
-                    intent = new Intent(StudentOperations.this, CreateTeam.class);
+                    intent = new Intent(StudentOperations.this, SelectTeamParameters.class);
                 }
                 else if(clickedView.getText().equals("Join Team")){
                     intent = new Intent(StudentOperations.this, JoinTeam.class);

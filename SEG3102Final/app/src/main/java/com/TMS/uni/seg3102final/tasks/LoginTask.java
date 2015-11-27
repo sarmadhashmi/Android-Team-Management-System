@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.R;
@@ -16,9 +17,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
@@ -40,7 +45,8 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
 
             URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/auth");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
+            conn.setConnectTimeout(MainActivity.TIMEOUT);
+            conn.setReadTimeout(MainActivity.TIMEOUT);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -63,33 +69,35 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ConnectException | SocketTimeoutException e) {
+            return MainActivity.getObj("description", "Seems like the server is down or cannot be reached for some reason at this moment!");
+        } catch (JSONException e) {
+            return MainActivity.getObj("description", "The returned data was not in the correct format!");
+        } catch (MalformedURLException e) {
+            return MainActivity.getObj("description", "The URL is not in the correct format!");
+        } catch (IOException e) {
+            return MainActivity.getObj("description", "Could not get data from server!");
         }
-        return null;
     }
 
     protected void onPostExecute(JSONObject response) {
-
         ((MainActivity) activity).dismiss();
-
         try
         {
-            String auth = response.getString("access_token");
-
-            if(response.getString("access_token") != null)
+            if(response.has("access_token") && response.getString("access_token") != null)
             {
                 SharedPreferences settings = activity.getSharedPreferences("auth",
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("access_token", auth);
+                editor.putString("access_token", response.getString("access_token"));
                 editor.commit();
 
                 String userType = response.getString("user_type");
                 ((MainActivity) activity).loadOperations(userType);
+            } else {
+                Toast.makeText(activity.getApplicationContext(), response.getString("description"), Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
-            ((MainActivity) activity).displayError();
             e.printStackTrace();
         }
     }

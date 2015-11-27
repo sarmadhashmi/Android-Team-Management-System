@@ -20,11 +20,13 @@ import android.widget.Toast;
 import com.TMS.uni.seg3102final.tasks.LoginTask;
 import com.TMS.uni.seg3102final.tasks.RegisterTask;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
-    public static final String IP_ADDRESS = "10.0.2.2";
+    public static final String IP_ADDRESS = "10.0.3.2";
+    public static final int TIMEOUT = 5000;
     public ProgressDialog progress;
     private boolean register = false;
     LinearLayout registerLayout;
@@ -121,5 +123,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static JSONObject getObj(String key, String value) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put(key, value);
+            return obj;
+        } catch (JSONException je) {
+            je.printStackTrace();
+        }
+        return null;
     }
 }
