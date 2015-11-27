@@ -93,14 +93,20 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
 
     protected void onPostExecute(JSONObject response) {
         ((MainActivity) activity).dismiss();
+
+try {
+    System.out.println(response.toString(4));
+}catch (Exception e){
+
+}
         try
         {
-            if(response.getString("message") != null)
+            if(response.has("message"))
             {
-                ((MainActivity) activity).registerMessage(response.getString("message"));
+                ((MainActivity) activity).displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
-            ((MainActivity) activity).registerMessage("Error Unable to Connect to Server");
+            ((MainActivity) activity).displayMessage("Unexpected Error");
             e.printStackTrace();
         }
     }

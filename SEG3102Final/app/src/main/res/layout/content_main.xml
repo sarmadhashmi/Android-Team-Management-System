@@ -75,9 +75,7 @@
                 android:text="@string/student" />
         </RadioGroup>
         </LinearLayout>
-    <LinearLayout android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+
     <Button
         android:text="Login"
         android:id="@+id/loginButton"
@@ -85,19 +83,9 @@
         android:textColor="#FFFFFF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+
         android:onClick="login" />
-    <Button
-        android:text="Register"
-        android:id="@+id/registerButton"
-        android:layout_toRightOf="@+id/loginButton"
-        android:background="#8f001a"
-        android:textColor="#FFFFFF"
-        android:layout_marginLeft="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:onClick="register" />
-    </LinearLayout>
+
+
 
 </LinearLayout>

@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
-    public static final String IP_ADDRESS = "10.0.3.2";
+    public static final String IP_ADDRESS = "10.0.2.2";
     public static final int TIMEOUT = 5000;
     public ProgressDialog progress;
     private boolean register = false;
@@ -79,10 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void displayError() {
-        Toast.makeText(getApplicationContext(), "Invalid User Or Password", Toast.LENGTH_LONG).show();
-    }
-
     public void dismiss() {
         progress.dismiss();
     }
@@ -105,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void registerMessage(String message) {
+    public void displayMessage(String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(
                 this).create();
 
@@ -122,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // Write your code here to execute after dialog closed
-                Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
-
             }
         });
 
