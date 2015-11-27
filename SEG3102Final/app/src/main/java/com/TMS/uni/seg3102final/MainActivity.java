@@ -1,6 +1,8 @@
 package com.TMS.uni.seg3102final;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -55,7 +58,21 @@ public class MainActivity extends AppCompatActivity {
             registerLayout.setVisibility(View.VISIBLE);
         }else{
 
+            EditText username = (EditText) findViewById(R.id.username);
+            EditText password = (EditText) findViewById(R.id.password);
+            EditText email = (EditText) findViewById(R.id.email);
+            EditText firstName = (EditText) findViewById(R.id.firstName);
+            EditText lastName = (EditText) findViewById(R.id.lastName);
 
+            RadioGroup rg = (RadioGroup)findViewById(R.id.radio_group_user);
+            String radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+
+            String[] params = {radioValue, username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString()};
+
+            progress.setTitle("Register");
+            progress.setMessage("Registering Please Wait...");
+            progress.show();
+            new RegisterTask(this).execute(params);
         }
 
     }
@@ -74,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
             EditText password = (EditText) findViewById(R.id.password);
             String[] params = {username.getText().toString(), password.getText().toString()};
 
-            progress.setTitle("logging in");
-            progress.setMessage("Wait while loading...");
+            progress.setTitle("Log in");
+            progress.setMessage("Logging in...");
             progress.show();
             new LoginTask(this).execute(params);
         }else{
@@ -83,6 +100,35 @@ public class MainActivity extends AppCompatActivity {
             registerLayout.startAnimation(slideDown);
             registerLayout.setVisibility(View.GONE);
         }
+    }
+
+
+    public void registerMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+//        alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Write your code here to execute after dialog closed
+                Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+
+
     }
 
     public void loadOperations(String type) {

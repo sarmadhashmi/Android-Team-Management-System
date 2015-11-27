@@ -68,13 +68,11 @@
             <RadioButton android:id="@+id/radio_instructor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/instructor"
-                android:onClick="onRadioButtonClicked"/>
+                android:text="@string/instructor" />
             <RadioButton android:id="@+id/radio_student"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/student"
-                android:onClick="onRadioButtonClicked"/>
+                android:text="@string/student" />
         </RadioGroup>
         </LinearLayout>
     <LinearLayout android:orientation="horizontal"

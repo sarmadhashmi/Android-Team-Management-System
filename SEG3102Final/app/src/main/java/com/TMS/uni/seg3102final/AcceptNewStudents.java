@@ -116,9 +116,9 @@ public class AcceptNewStudents extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-
+        /* temp until integrated with Backend */
         CharSequence[] array = {"SnakeTeam", "SegFour", "SegSix"};
-
+        /* temp until integrated with Backend */
 
         builder.setTitle("Select Team")
 
