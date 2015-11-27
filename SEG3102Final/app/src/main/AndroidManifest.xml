@@ -49,6 +49,8 @@
             android:name=".SelectTeamParameters"
             android:label="@string/title_activity_select_team_parameters" >
         </activity>
+        <activity android:name=".TeamProfilePage">
+        </activity>
 
     </application>
 

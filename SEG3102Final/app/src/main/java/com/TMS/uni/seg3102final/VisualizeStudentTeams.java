@@ -2,16 +2,23 @@ package com.TMS.uni.seg3102final;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 
+import com.TMS.uni.seg3102final.Models.DBItem;
+import com.TMS.uni.seg3102final.adapters.CustomDBItemAdapter;
 import com.TMS.uni.seg3102final.tasks.StudentTeamsTask;
 import com.TMS.uni.seg3102final.adapters.CustomExpandableListAdapter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,44 +48,36 @@ public class VisualizeStudentTeams extends AppCompatActivity {
         progress.dismiss();
     }
 
-    private String JSONArrayToString(JSONArray arr, String seperator) {
-        StringBuilder str = new StringBuilder();
-        try {
-            for (int i = 0; i < arr.length() - 1; i++) {
-                str.append(arr.getString(i) + seperator + " ");
-            }
-            str.append(arr.getString(arr.length() - 1));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return str.toString();
-    }
-
     public void showStudentTeams(JSONArray teams) {
-        ExpandableListView expListView = (ExpandableListView) findViewById(R.id.expand_student_teams);
-        ArrayList<String> headers = new ArrayList<String>();
-        HashMap<String, List<String>> children = new HashMap<String, List<String>>();
+        ListView listView = (ListView) findViewById(R.id.student_teams);
+        ArrayList<DBItem> items = new ArrayList<DBItem>();
         for (int i = 0; i < teams.length(); i++) {
             try {
-                JSONObject team = teams.getJSONObject(i);
-                List<String> teamInfo = new ArrayList<String>();
-                teamInfo.add("Date of creation: " + team.getString("dateOfCreation"));
-                teamInfo.add("Size: " + team.getString("teamSize"));
-                teamInfo.add("Liason: " + team.getString("liason"));
-                JSONArray requestedMembers = team.getJSONArray("requestedMembers");
-                JSONArray teamMembers = team.getJSONArray("teamMembers");
-                teamInfo.add("Students who have requested to join the team: " + JSONArrayToString(requestedMembers, ","));
-                teamInfo.add("Students currently in team: " + JSONArrayToString(teamMembers, ","));
-
-                // Add to list for expandable list view
-                children.put(team.getString("teamName"), teamInfo);
-                headers.add(team.getString("teamName"));
-            } catch (Exception e) {
+                items.add(new DBItem(teams.getJSONObject(i), "team"));
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        CustomExpandableListAdapter listAdapter = new CustomExpandableListAdapter(this, headers, children);
-        expListView.setAdapter(listAdapter);
+        final CustomDBItemAdapter listAdapter = new CustomDBItemAdapter(this, android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DBItem item = listAdapter.getItem(position);
+                Intent intent = new Intent(VisualizeStudentTeams.this, TeamProfilePage.class);
+                try {
+                    intent.putExtra("teamName", item.getKey("teamName"));
+                    intent.putExtra("dateOfCreation", item.getKey("dateOfCreation"));
+                    intent.putExtra("teamSize", item.getKey("teamSize"));
+                    intent.putExtra("liason", item.getKey("liason"));
+                    intent.putExtra("requestedMembers", item.JSONArrayToStringArray("requestedMembers"));
+                    intent.putExtra("teamMembers", item.JSONArrayToStringArray("teamMembers"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     public void logout(MenuItem m) {
