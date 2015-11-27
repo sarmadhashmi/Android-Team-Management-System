@@ -251,7 +251,7 @@ def create_team():
 
                 if createTeam:
                     #Check if each student in team_members IS NOT in a team with the team param
-                    list_of_teams = teams.find({"teamParameterId" : team_param_id})
+                    list_of_teams = teams.find({"teamParameterId" : teamParam['_id']})
                     for team in list_of_teams:
                         for student in team_members:
                             if student in team['teamMembers']:
@@ -269,7 +269,7 @@ def create_team():
                         status = "complete"
                     
                     res = teams.insert_one({
-                            "teamParamId" : team_param_id,
+                            "teamParamId" : teamParam['_id'],
                             "teamName" : team_name,
                             "dateOfCreation" : time.strftime("%c"),
                             "status" : status,
@@ -403,13 +403,11 @@ def view_requested_members():
         invalid_team_id= invalid_object(team_id, teams)[0]
 
         if invalid_team_id:
-            #data['message'] = "A team with the specified team id does not exist"
             data['message'] = "A team with id: " + team_id + " does not exist"
         elif current_user['username'] != team['liason']:
             data['message'] = "Only liasons of the requested team can perform this operation"
         else:
             list_of_requests = team['requestedMembers']
-            #Should I return empty members? or tell you there are no requested members?
             data['requestedMembers'] = list_of_requests
             data['status'] = 200
             
@@ -499,16 +497,15 @@ def get_teams_with_teamParam():
         invalid_teamParam_id= invalid_object(teamParam_id, team_params)[0]
 
         if invalid_teamParam_id:
-            data['message'] = "A team Parameter with id: " + teamParam_id + " does not exist"
+            data['message'] = "A team Parameter with id: '" + teamParam_id + "' does not exist"
         else:
-            list_of_teams = teams.find({'teamParamId' : teamParam_id})
-            list_of_teams2 = []
-            for team in list_of_teams:
+            list_of_teams = []
+            for team in teams.find({'teamParamId' : ObjectId(teamParam_id)}):
                 team['teamParamId'] = str(team['teamParamId'])
                 team['_id'] = str(team['_id'])
-                list_of_teams2.append(team)
+                list_of_teams.append(team)
 
-            data['list_of_teams'] = list_of_teams2
+            data['list_of_teams'] = list_of_teams
             data['status'] = 200
             
     else: 
