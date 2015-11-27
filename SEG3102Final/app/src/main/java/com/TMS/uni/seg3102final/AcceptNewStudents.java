@@ -147,5 +147,7 @@ public class AcceptNewStudents extends AppCompatActivity {
         return builder.create();
     }
 
-
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
+    }
 }

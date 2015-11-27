@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 import com.TMS.uni.seg3102final.tasks.StudentTeamsTask;
@@ -78,5 +79,9 @@ public class VisualizeStudentTeams extends AppCompatActivity {
         }
         CustomExpandableListAdapter listAdapter = new CustomExpandableListAdapter(this, headers, children);
         expListView.setAdapter(listAdapter);
+    }
+
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
     }
 }

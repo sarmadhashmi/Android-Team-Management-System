@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SEG3102Final</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Logout</string>
     <string name="enter_username">Username</string>
     <string name="enter_password">Password</string>
     <string name="user_type">What are you?</string>
@@ -30,4 +30,6 @@
     <string name="addMembers">+</string>
     <string name="added_members">Students currently in team</string>
     <string name="select_student">Add students</string>
+    <string name="action_type">Login</string>
+    <string name="action_type_inverse">Register?</string>
 </resources>

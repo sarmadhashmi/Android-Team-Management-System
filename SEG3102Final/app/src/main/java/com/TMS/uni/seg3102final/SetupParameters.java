@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,8 +46,13 @@ public class SetupParameters extends AppCompatActivity {
         progress.show();
         new SetupParametersTask(this).execute(params);
     }
+
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_setup_parameters);
+    }
+
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
     }
 }

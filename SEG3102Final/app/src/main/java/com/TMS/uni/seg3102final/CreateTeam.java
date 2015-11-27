@@ -126,4 +126,8 @@ public class CreateTeam extends AppCompatActivity {
         progress.show();
         new CreateTeamTask(this, team_param_id, name, currentStudents.toJSONArray()).execute();
     }
+
+    public void logout(MenuItem m) {
+        MainActivity.logout(m, this);
+    }
 }
