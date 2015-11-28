@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SEG3102Final</string>
+    <string name="app_name">TMS</string>
     <string name="action_settings">Logout</string>
     <string name="enter_username">Username</string>
     <string name="enter_password">Password</string>
