@@ -9,7 +9,7 @@ from flask_jwt import JWT, jwt_required, current_identity, JWTError
 import bcrypt
 import dummyData
 from datetime import datetime
-from voluptuous import Schema, Any, Required, All, Length, Range, MultipleInvalid, Invalid, ALLOW_EXTRA
+from voluptuous import Schema, Any, Required, All, Length, Range, MultipleInvalid, Invalid
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -45,8 +45,7 @@ schema = Schema({
             "user_type" : Any(str, unicode),
             "programOfStudy" : Any(str, unicode),
             "course_code" : Any(str, unicode),
-            #"course_section" : Any(str, unicode, Length(min=1, max=1)),
-            "course_section" : Any(str, unicode),
+            "course_section" : All(Any(str, unicode), Length(min=1, max=1)),
             "minimum_num_students" : All(int, Range(min=1)),
             "maximum_num_students" : All(int, Range(min=1)),
             "deadline" : Date(),
@@ -55,7 +54,7 @@ schema = Schema({
             "team_id" :  Any(str, unicode),
             "teamParam_id" : Any(str, unicode)
 
-            },extra=ALLOW_EXTRA)
+            })
 
 
 def authenticate(username, password):
@@ -140,7 +139,10 @@ def register():
             conforms_to_schema = True
         except MultipleInvalid as e: 
             conforms_to_schema = False
-            data['message'] = e.msg + " for " + e.path[0]
+            if "expected" in e.msg:
+                data['message'] = e.path[0] + " is not in the correct format"
+            else:
+                data['message'] = e.msg + " for " + e.path[0]
 
         if conforms_to_schema:
             #Check if user already exists
@@ -215,14 +217,17 @@ def create_team_params():
                             {
                                 "course_code": course_code, 
                                 "course_section": course_section,
-                                "minimum_number_of_students" : minimum_number_of_students,
-                                "maximum_number_of_students" : maximum_number_of_students,
+                                "minimum_num_students" : minimum_number_of_students,
+                                "maximum_num_students" : maximum_number_of_students,
                                 "deadline" : deadline
                             })
                     conforms_to_schema = True
                 except MultipleInvalid as e: 
                     conforms_to_schema = False
-                    data['message'] = str(e.msg) + " for " + e.path[0]
+                    if "expected" in e.msg:
+                        data['message'] = e.path[0] + " is not in the correct format"
+                    else:
+                        data['message'] = e.msg + " for " + e.path[0]
                     
                 if conforms_to_schema:
                     # Search for course by course code & section
@@ -302,7 +307,10 @@ def create_team():
                 conforms_to_schema = True
             except MultipleInvalid as e: 
                 conforms_to_schema = False
-                data['message'] = e.msg + " for " + e.path[0]
+                if "expected" in e.msg:
+                    data['message'] = e.path[0] + " is not in the correct format"
+                else:
+                    data['message'] = e.msg + " for " + e.path[0]
                 
             if conforms_to_schema:
                 valid_info = invalid_object(team_param_id, team_params)
