@@ -1,6 +1,6 @@
 from pymongo import MongoClient
-import server, time
-
+import server
+from datetime import datetime
 def dummy_data():
 
     #Connect to DB
@@ -22,8 +22,8 @@ def dummy_data():
                             "username": "stest",
                             "password": server.encrypt("test"),
                             "email" : "snake@uottawa.ca",
-                            "firstName" : "Student",
-                            "lastName" : "Tester",
+                            "firstName" : "Muraad",
+                            "lastName" : "Hared",
                             "programOfStudy" : "SEG"
                             }
                             , True)
@@ -33,8 +33,8 @@ def dummy_data():
                             "username": "stest2",
                             "password": server.encrypt("test"),
                             "email" : "snake2@uottawa.ca",
-                            "firstName" : "Student2",
-                            "lastName" : "Tester2",
+                            "firstName" : "Sarmad",
+                            "lastName" : "Hashmi",
                             "programOfStudy" : "SEG"
                             }
                             , True)
@@ -43,8 +43,8 @@ def dummy_data():
                             "username": "reqTest",
                             "password": server.encrypt("test"),
                             "email" : "snake2@uottawa.ca",
-                            "firstName" : "reqTest",
-                            "lastName" : "Tester2",
+                            "firstName" : "Salman",
+                            "lastName" : "Rana",
                             "programOfStudy" : "SEG"
                             }
                             , True)
@@ -55,7 +55,7 @@ def dummy_data():
                             "password": server.encrypt("test"),
                             "email" : "instructor@uottawa.ca",
                             "firstName" : "Instructor",
-                            "lastName" : "Tester",
+                            "lastName" : "Muraad",
                             "programOfStudy" : "SEG"
                             }
                             , True)
@@ -65,8 +65,8 @@ def dummy_data():
                             "username": "test2",
                             "password": server.encrypt("test"),
                             "email" : "instructor2@uottawa.ca",
-                            "firstName" : "Instructor2",
-                            "lastName" : "Tester2",
+                            "firstName" : "Instructor",
+                            "lastName" : "Hashmi",
                             "programOfStudy" : "SEG"
                             }
                              , True)
@@ -89,35 +89,35 @@ def dummy_data():
     course_3101 = courses.find_one({"courseCode" : "SEG 3101", "courseSection" : "B"})
     team_params.replace_one(
                 {
-                    "InstructorId" : instructor['_id'],
+                    "instructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents" : 2,
                     "maximumNumberOfStudents" : 4,
-                    "deadline" : "02/11/2017 12:54"
+                    "deadline" : "02/11/2017 12:54:00"
                 },
                 {
-                    "InstructorId" : instructor['_id'],
+                    "instructorId" : instructor['_id'],
                     "courseId" : course_3102['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "02/11/2017 12:54"
+                    "deadline": "02/11/2017 12:54:00"
                 }
                 , True)
 
     team_params.replace_one(
                 {
-                    "InstructorId" : instructor['_id'],
+                    "instructorId" : instructor['_id'],
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "20/05/2017 23:59"
+                    "deadline": "20/05/2017 23:59:00"
                 },
                 {
-                    "InstructorId" : instructor['_id'],
+                    "instructorId" : instructor['_id'],
                     "courseId" : course_3101['_id'],
                     "minimumNumberOfStudents": 2,
                     "maximumNumberOfStudents": 4,
-                    "deadline": "20/05/2017 23:59"
+                    "deadline": "20/05/2017 23:59:00"
                 }
                 , True)
 
@@ -131,7 +131,7 @@ def dummy_data():
                 {
                     "teamParamId" : team_params_1['_id'],
                     "teamName" : "SnakeFour",
-                    "dateOfCreation" : time.strftime("%c"),
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "complete",
                     "teamSize" : 4,
                     "teamMembers": ["Salman", "Janac", "stest", "Sarmad"],
@@ -146,7 +146,7 @@ def dummy_data():
                 {
                     "teamParamId" : team_params_1['_id'],
                     "teamName" : "NoRequestedMembers",
-                    "dateOfCreation" : time.strftime("%c"),
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "incomplete",
                     "teamSize" : 3,
                     "teamMembers": ["stest", "stest2", "Janac"],
@@ -161,7 +161,7 @@ def dummy_data():
                 {
                     "teamParamId" : team_params_2['_id'],
                     "teamName" : "OneMember",
-                    "dateOfCreation" : time.strftime("%c"),
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "incomplete",
                     "teamSize" : 1,
                     "teamMembers": ["stest"],
@@ -176,7 +176,7 @@ def dummy_data():
                 {
                     "teamParamId" : team_params_2['_id'],
                     "teamName" : "TwoMembers",
-                    "dateOfCreation" : time.strftime("%c"),
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "incomplete",
                     "teamSize" : 1,
                     "teamMembers": ["stest", "stest2"],

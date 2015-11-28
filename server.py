@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from flask_jwt import JWT, jwt_required, current_identity, JWTError
 import bcrypt
 import dummyData
-import time
+from datetime import datetime
+from voluptuous import Schema, Any, Required, All, Length, Range, MultipleInvalid, Invalid, ALLOW_EXTRA
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -23,6 +24,38 @@ instructor_users = db['instructors']
 team_params = db['teamParams']
 courses = db['courses']
 teams = db['teams']
+
+
+def Date(fmt='%d/%m/%Y %H:%M:%S'):
+    return lambda v: datetime.strptime(v, fmt)
+
+def validate_email(email):
+     """Validate email."""
+     if not "@" in email:
+         raise Invalid("This email is invalid.")
+     return email
+
+#Define Schema
+schema = Schema({
+            "username": Any(str, unicode), 
+            "password": Any(str, unicode), 
+            "email": validate_email,
+            "first_name": Any(str, unicode),
+            "last_name" : Any(str, unicode),
+            "user_type" : Any(str, unicode),
+            "programOfStudy" : Any(str, unicode),
+            "course_code" : Any(str, unicode),
+            #"course_section" : Any(str, unicode, Length(min=1, max=1)),
+            "course_section" : Any(str, unicode),
+            "minimum_num_students" : All(int, Range(min=1)),
+            "maximum_num_students" : All(int, Range(min=1)),
+            "deadline" : Date(),
+            "team_param_id": Any(str, unicode),
+            "team_name" : Any(str, unicode),
+            "team_id" :  Any(str, unicode),
+            "teamParam_id" : Any(str, unicode)
+
+            },extra=ALLOW_EXTRA)
 
 
 def authenticate(username, password):
@@ -94,41 +127,62 @@ def register():
         f_name = request.json['first_name']
         l_name = request.json['last_name']
         user_type = request.json['user_type']
+        try:
+            schema(
+                    {
+                        "username": username, 
+                        "password": password, 
+                        "email": email,
+                        "first_name": f_name,
+                        "last_name" : l_name,
+                        "user_type" : user_type
+                    })
+            conforms_to_schema = True
+        except MultipleInvalid as e: 
+            conforms_to_schema = False
+            data['message'] = e.msg + " for " + e.path[0]
 
-        #Check if user already exists
-        if student_users.find_one({"username": username}):                    
-            data['message'] = "Student with that username already exists"
-        elif instructor_users.find_one({"username": username}):                    
-            data['message'] = "Instructor with that username already exists"
-        else:         
-            if(user_type.strip().lower() == "student"):
-                if 'programOfStudy' not in request.json:
-                    data['message'] = "Program of Study was not specified"
-                else:
-                    program_of_study = request.json['programOfStudy']
-                    res = student_users.insert_one({
-                            "username": username,
-                            "password": encrypt(password),
-                            "email" : email,
-                            "firstName" : f_name,
-                            "lastName" : l_name,
-                            "programOfStudy" : program_of_study
-                        })
+        if conforms_to_schema:
+            #Check if user already exists
+            if student_users.find_one({"username": username}):                    
+                data['message'] = "Student with that username already exists"
+            elif instructor_users.find_one({"username": username}):                    
+                data['message'] = "Instructor with that username already exists"
+            else:         
+                if(user_type.strip().lower() == "student"):
+                    if 'programOfStudy' not in request.json:
+                        data['message'] = "Program of Study was not specified"
+                    else:
+                        program_of_study = request.json['programOfStudy']
+                        register = True
+                        try:
+                            schema({"programOfStudy" : program_of_study})
+                        except MultipleInvalid as e: 
+                            data['message'] = "The program of study entered is not a valid program"
+                            register = False
+                        if register:
+                            res = student_users.insert_one({
+                                    "username": username,
+                                    "password": encrypt(password),
+                                    "email" : email,
+                                    "firstName" : f_name,
+                                    "lastName" : l_name,
+                                    "programOfStudy" : program_of_study
+                                })
+                            data['status'] = 200
+                            data['message'] = 'Student successfully registered!'
+                elif (user_type.strip().lower() == "instructor"):
+                    res = instructor_users.insert_one({
+                                "username": username,
+                                "password": encrypt(password),
+                                "email" : email,
+                                "firstName" : f_name,
+                                "lastName" : l_name
+                            })
                     data['status'] = 200
-                    data['message'] = 'Student successfully registered!'
-            elif (user_type.strip().lower() == "instructor"):
-                res = instructor_users.insert_one({
-                            "username": username,
-                            "password": encrypt(password),
-                            "email" : email,
-                            "firstName" : f_name,
-                            "lastName" : l_name
-                        })
-                data['status'] = 200
-                data['message'] = 'Instructor successfully registered!'
-            else:
-                data['message'] = 'The user type specified is not valid'
-
+                    data['message'] = 'Instructor successfully registered!'
+                else:
+                    data['message'] = 'The user type specified is not valid'
         
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -155,22 +209,36 @@ def create_team_params():
                 minimum_number_of_students = request.json['minimum_num_students']
                 maximum_number_of_students = request.json['maximum_num_students'] 
                 deadline = request.json['deadline']
-                #SHOULD HAVE VALIDATION HERE THAT CHECKS WHETHER THE PARAMETERS ARE IN CORRECT FORMAT (DATE, INTEGER, ETC.)
                 
-                # Search for course by course code & section
-                course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
-                if course is None:
-                    data['message'] = "The course code with the specified section does not exist"
-                else:
-                    res = team_params.insert_one({
-                            "instructorId" : user['_id'],
-                            "courseId" : course['_id'],
-                            "minimumNumberOfStudents": minimum_number_of_students,
-                            "maximumNumberOfStudents": minimum_number_of_students,
-                            "deadline": deadline
-                        })
-                    data['status'] = 200
-                    data['message'] = 'Team Parameters were successfully created!'
+                try:
+                    schema(
+                            {
+                                "course_code": course_code, 
+                                "course_section": course_section,
+                                "minimum_number_of_students" : minimum_number_of_students,
+                                "maximum_number_of_students" : maximum_number_of_students,
+                                "deadline" : deadline
+                            })
+                    conforms_to_schema = True
+                except MultipleInvalid as e: 
+                    conforms_to_schema = False
+                    data['message'] = str(e.msg) + " for " + e.path[0]
+                    
+                if conforms_to_schema:
+                    # Search for course by course code & section
+                    course = courses.find_one({"courseCode": course_code, "courseSection": course_section})
+                    if course is None:
+                        data['message'] = "The course code with the specified section does not exist"
+                    else:
+                        res = team_params.insert_one({
+                                "instructorId" : user['_id'],
+                                "courseId" : course['_id'],
+                                "minimumNumberOfStudents": minimum_number_of_students,
+                                "maximumNumberOfStudents": minimum_number_of_students,
+                                "deadline": deadline
+                            })
+                        data['status'] = 200
+                        data['message'] = 'Team Parameters were successfully created!'
         else:
             data['message'] = 'You do not have permission to create team parameters'
     resp = jsonify(data)
@@ -185,7 +253,7 @@ def get_team_params():
     teamParams = []
     for row in team_params.find():
         course = courses.find_one({'_id': row['courseId']})
-        instructor = instructor_users.find_one({'_id': row['InstructorId']})        
+        instructor = instructor_users.find_one({'_id': row['instructorId']})        
         obj = {
             "_id": str(row['_id']),
             "courseId": str(course['_id']),
@@ -223,65 +291,77 @@ def create_team():
                 invalid_liason = False
                 if liason not in team_members:
                     team_members.append(liason) #Add liason username if it is not already in 
-            
-            valid_info = invalid_object(team_param_id, team_params)
-            invalid_team_param = valid_info[0]
-            teamParam = valid_info[1]
-            
-            if invalid_liason:
-                data['message'] = "You do not have permission to perform this operation"
-            elif invalid_team_param:
-                data['message'] = "No team parameter exists for the given team parameter ID"
-            elif len(team_members) > teamParam['maximumNumberOfStudents']:
-                data['message'] = "You have selected too many members, the maximum number of members allowed is "+ str(teamParam['maximumNumberOfStudents']) 
-            elif len(team_members) < teamParam['minimumNumberOfStudents']:
-                data['message'] = "You did not provide enough members, the minimum number of members allowed is "+ str(teamParam['minimumNumberOfStudents'])
-            elif teams.find_one({'teamName' : team_name}): #Check within the teams with same teamparam (Valid to have different courses have teams with same name? 
-                data['message'] = "A team already exists with the given team name"
-            else:
-                #Check if each username in the list of team_members received is a valid student user
-                createTeam = True
-                members = []
-                for member in team_members:
-                    if student_users.find_one({"username" : member}) is None:
-                        createTeam = False
-                        data['message'] = member + " is not a valid Student username"
-                        break
-                    members.append(member)
 
-                if createTeam:
-                    #Check if each student in team_members IS NOT in a team with the team param
-                    list_of_teams = teams.find({"teamParameterId" : teamParam['_id']})
-                    for team in list_of_teams:
-                        for student in team_members:
-                            if student in team['teamMembers']:
-                                createTeam = False
-                                data['message'] = student + ' is already in a team'
-                                break
-
-                #If createTeam is still true, then we can insert a new team into the database
-                if createTeam:
-                    #Check if members is less than max team size
-                    less_than_max = len(members) < teamParam['maximumNumberOfStudents']
-                    if less_than_max:
-                        status = "incomplete"
-                    else:
-                        status = "complete"
-                    
-                    res = teams.insert_one({
-                            "teamParamId" : teamParam['_id'],
-                            "teamName" : team_name,
-                            "dateOfCreation" : time.strftime("%c"),
-                            "status" : status,
-                            "teamSize" : len(members),
-                            "teamMembers": members,
-                            "liason" : liason,
-                            "requestedMembers" : []
-                            
+            try:
+                schema(
+                        {
+                            "team_param_id": team_param_id, 
+                            "team_name": team_name 
+                            #Team_members not included because it is easier to validate lists manually than using library
                         })
-                    data['status'] = 200
-                    data['message'] = 'Team was successfully created!'
-    
+                conforms_to_schema = True
+            except MultipleInvalid as e: 
+                conforms_to_schema = False
+                data['message'] = e.msg + " for " + e.path[0]
+                
+            if conforms_to_schema:
+                valid_info = invalid_object(team_param_id, team_params)
+                invalid_team_param = valid_info[0]
+                teamParam = valid_info[1]
+                
+                if invalid_liason:
+                    data['message'] = "You do not have permission to perform this operation"
+                elif invalid_team_param:
+                    data['message'] = "No team parameter exists for the given team parameter ID"
+                elif len(team_members) > teamParam['maximumNumberOfStudents']:
+                    data['message'] = "You have selected too many members, the maximum number of members allowed is "+ str(teamParam['maximumNumberOfStudents']) 
+                elif len(team_members) < teamParam['minimumNumberOfStudents']:
+                    data['message'] = "You did not provide enough members, the minimum number of members allowed is "+ str(teamParam['minimumNumberOfStudents'])
+                elif teams.find_one({'teamName' : team_name}): #Check within the teams with same teamparam (Valid to have different courses have teams with same name? 
+                    data['message'] = "A team already exists with the given team name"
+                else:
+                    #Check if each username in the list of team_members received is a valid student user
+                    createTeam = True
+                    members = []
+                    for member in team_members:
+                        if student_users.find_one({"username" : member}) is None:
+                            createTeam = False
+                            data['message'] = member + " is not a valid Student username"
+                            break
+                        members.append(member)
+
+                    if createTeam:
+                        #Check if each student in team_members IS NOT in a team with the team param
+                        list_of_teams = teams.find({"teamParameterId" : teamParam['_id']})
+                        for team in list_of_teams:
+                            for student in team_members:
+                                if student in team['teamMembers']:
+                                    createTeam = False
+                                    data['message'] = student + ' is already in a team'
+                                    break
+
+                    #If createTeam is still true, then we can insert a new team into the database
+                    if createTeam:
+                        #Check if members is less than max team size
+                        less_than_max = len(members) < teamParam['maximumNumberOfStudents']
+                        if less_than_max:
+                            status = "incomplete"
+                        else:
+                            status = "complete"
+                        
+                        res = teams.insert_one({
+                                "teamParamId" : teamParam['_id'],
+                                "teamName" : team_name,
+                                "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                                "status" : status,
+                                "teamSize" : len(members),
+                                "teamMembers": members,
+                                "liason" : liason,
+                                "requestedMembers" : []
+                                
+                            })
+                        data['status'] = 200
+                        data['message'] = 'Team was successfully created!'
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
@@ -581,5 +661,5 @@ def validate_data_format (request, required_keys):
 
 if __name__ == "__main__":
     dummyData.dummy_data()
-    app.run(port=3001)    
+    app.run(port=80)    
 
