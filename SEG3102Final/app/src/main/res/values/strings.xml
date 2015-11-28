@@ -32,4 +32,9 @@
     <string name="select_student">Add students</string>
     <string name="action_type">Login</string>
     <string name="action_type_inverse">Register?</string>
+    <string name="date_of_creation">Created on</string>
+    <string name="team_size">Size</string>
+    <string name="liason">Liason username</string>
+    <string name="current_members">Students in team</string>
+    <string name="requested_members">Students requesting to join team</string>
 </resources>

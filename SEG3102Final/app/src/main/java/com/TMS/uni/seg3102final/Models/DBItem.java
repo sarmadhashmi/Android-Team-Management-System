@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 public class DBItem {
     JSONObject obj;
@@ -22,6 +23,9 @@ public class DBItem {
             case "student":
                 text = obj.getString("firstName") + " " + obj.getString("lastName");
                 break;
+            case "team":
+                text = obj.getString("teamName");
+                break;
             default:
                 text = obj.getString("_id");
                 break;
@@ -35,6 +39,19 @@ public class DBItem {
 
     public String getId() throws JSONException {
         return obj.getString("_id");
+    }
+
+    public ArrayList<String> JSONArrayToStringArray(String key) throws JSONException {
+        JSONArray arr = obj.getJSONArray(key);
+        ArrayList<String> strings = new ArrayList<String>();
+        try {
+            for (int i = 0; i < arr.length() - 1; i++) {
+                strings.add(arr.getString(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strings;
     }
 
     public String getKey(String key) throws JSONException {
