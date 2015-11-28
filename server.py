@@ -518,6 +518,36 @@ def get_teams_with_teamParam():
     return resp
 
 
+#Return the teams the current user is a liason for
+@app.route('/liasionTeams', methods=['GET'])
+@jwt_required()
+def get_liasion_teams():
+    data = {}
+    data['status'] = 404
+    current_user = student_users.find_one({"_id" : current_identity['_id']})
+    if current_user:
+        db_teams = teams.find({"liason" : current_user['username']})
+        number_of_teams = db_teams.count()
+        if number_of_teams == 0:
+            data['message'] = "You are not a liasion of any team"
+        else:
+            list_of_teams = []
+            for team in db_teams:
+                team['teamParamId'] = str(team['teamParamId'])
+                team['_id'] = str(team['_id'])
+                list_of_teams.append(team)
+        
+            data['teams'] = list_of_teams
+    else:
+        data['message'] = "You do not have permission to perform this operation"        
+
+
+    resp = jsonify(data)
+    resp.status_code = data['status']
+
+    return resp
+
+
 
 #Validates object based on team_id and the specified db to search in
 def invalid_object(id, database):

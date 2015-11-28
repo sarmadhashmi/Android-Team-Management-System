@@ -134,7 +134,7 @@ def dummy_data():
                     "dateOfCreation" : time.strftime("%c"),
                     "status" : "complete",
                     "teamSize" : 4,
-                    "teamMembers": ["Salman", "Janac", "test", "Sarmad"],
+                    "teamMembers": ["Salman", "Janac", "stest", "Sarmad"],
                     "liason" : "stest",
                     "requestedMembers" : ["Muraad"]                        
                 }, True)
@@ -171,15 +171,15 @@ def dummy_data():
 
     teams.replace_one(
                 {
-                    "teamName" : "OneMember"
+                    "teamName" : "TwoMembers"
                 },
                 {
                     "teamParamId" : team_params_2['_id'],
-                    "teamName" : "OneMember",
+                    "teamName" : "TwoMembers",
                     "dateOfCreation" : time.strftime("%c"),
                     "status" : "incomplete",
                     "teamSize" : 1,
-                    "teamMembers": ["stest"],
+                    "teamMembers": ["stest", "stest2"],
                     "liason" : "stest",
                     "requestedMembers" : ["reqTest"]                        
                 }, True)
