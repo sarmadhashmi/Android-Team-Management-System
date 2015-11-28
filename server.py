@@ -344,7 +344,6 @@ def get_incomplete_teams():
     return resp
 
 #Use case Join Team goes against our design. A student can only join if they are not in a team already
-# TODO figure this out and make the appropriate change
 @app.route('/joinTeams', methods=['POST'])
 @jwt_required()
 def join_teams():
@@ -370,7 +369,6 @@ def join_teams():
             if user is None:
                 user = instructor_users.find_one({"_id" : current_identity['_id']})
             username = user['username']
-            ##Check for invalid Team ids? no way this can happend tho..
             for team in team_ids:
                 current_team = teams.find_one({"_id" : ObjectId(team)})
                 requests = current_team['requestedMembers']
@@ -396,24 +394,25 @@ def view_requested_members():
     data = {}
     data['status'] = 404
     current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
-    #assuming you are a student
+    
+    if current_user:
+        if 'team_id' in request.args:
+            team_id = request.args['team_id']
+            invalid_team_id= invalid_object(team_id, teams)[0]
 
-    if 'team_id' in request.args and current_user is not None: #TEMP SOLUTION UNTIL WE FIGURE out whether to allow instructors
-        team_id = request.args['team_id']
-        invalid_team_id= invalid_object(team_id, teams)[0]
-
-        if invalid_team_id:
-            data['message'] = "A team with id: " + team_id + " does not exist"
-        elif current_user['username'] != team['liason']:
-            data['message'] = "Only liasons of the requested team can perform this operation"
-        else:
-            list_of_requests = team['requestedMembers']
-            data['requestedMembers'] = list_of_requests
-            data['status'] = 200
-            
-    else: 
-        data['message'] = "No team id was provided"
-
+            if invalid_team_id:
+                data['message'] = "A team with id: " + team_id + " does not exist"
+            elif current_user['username'] != team['liason']:
+                data['message'] = "Only liasons of the requested team can perform this operation"
+            else:
+                list_of_requests = team['requestedMembers']
+                data['requestedMembers'] = list_of_requests
+                data['status'] = 200
+                
+        else: 
+            data['message'] = "No team id was provided"
+    else:
+        data['message'] = "You do not have permission to perform this operation"
 
     resp = jsonify(data)
     resp.status_code = data['status']
@@ -469,14 +468,17 @@ def accept_members():
                 data['message'] = "Maximum number of students is exceeded if all selected students are added to team"
             else:
                 members = team['teamMembers'] + list_of_usernames
+                if len(members) == max_students:
+                    status = "complete"
+                else:
+                    status = "incomplete"
                 teams.update_one(
                     {
                         "_id": team['_id']
                     },
                     {
-                        "$set": {"teamMembers": members}
+                        "$set": {"teamMembers": members, "status": status}
                     })
-                #update status of team if size of members is max students
                 data['message'] = "Successfully added selected users to team"
                 data['status'] = 200
     resp = jsonify(data)
