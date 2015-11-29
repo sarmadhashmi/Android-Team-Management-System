@@ -37,8 +37,8 @@ public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObjec
         try {
             String course_code = params[0];
             String course_section = params[1];
-            String min_num_students = params[2];
-            String max_num_students = params[3];
+            Integer min_num_students = Integer.valueOf(params[2]);
+            Integer max_num_students = Integer.valueOf(params[3]);
             String deadline = params[4];
             JSONObject credentials = new JSONObject();
             credentials.put("course_code", course_code);

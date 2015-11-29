@@ -24,7 +24,7 @@
     <string name="max_students">Max Students:</string>
     <string name="max_students_example">Example: 5</string>
     <string name="deadline">Deadline:</string>
-    <string name="deadline_example">Example: dd/MM/yyyy HH:MM</string>
+    <string name="deadline_example">Example: dd/MM/yyyy HH:MM:SS</string>
     <string name="setup_parameters">Setup parameters</string>
     <string name="team_name">Team Name:</string>
     <string name="addMembers">+</string>

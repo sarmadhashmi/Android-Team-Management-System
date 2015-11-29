@@ -669,5 +669,5 @@ def validate_data_format (request, required_keys):
 
 if __name__ == "__main__":
     dummyData.dummy_data()
-    app.run(port=80)    
+    app.run(port=3001)    
 
