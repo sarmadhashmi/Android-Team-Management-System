@@ -239,7 +239,7 @@ def create_team_params():
                                 "instructorId" : user['_id'],
                                 "courseId" : course['_id'],
                                 "minimumNumberOfStudents": minimum_number_of_students,
-                                "maximumNumberOfStudents": minimum_number_of_students,
+                                "maximumNumberOfStudents": maximum_number_of_students,
                                 "deadline": deadline
                             })
                         data['status'] = 200
