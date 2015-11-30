@@ -413,24 +413,6 @@ def get_teams():
 
     return resp
 
-@app.route('/incompleteTeams', methods=['GET'])
-@jwt_required()
-def get_incomplete_teams():
-    data = {}
-    data['status'] = 200
-    list_of_teams = []
-    for row in teams.find({"status": "incomplete"}):
-        row['_id'] = str(row['_id'])
-        row['teamParamId'] = str(row['teamParamId'])
-        list_of_teams.append(row)
-        
-        
-    data['teams'] = list_of_teams
-    resp = jsonify(data)
-    resp.status_code = data['status']
-
-    return resp
-
 #Use case Join Team goes against our design. A student can only join if they are not in a team already
 @app.route('/joinTeams', methods=['POST'])
 @jwt_required()
@@ -579,10 +561,10 @@ def accept_members():
     resp.status_code = data['status']
     return resp
 
-#Return the teams with the specified team parameter 
-@app.route('/teamsInTeamParam', methods=['GET'])
+#Return the incomplete teams with the specified team parameter 
+@app.route('/incompleteTeamsInTeamParam', methods=['GET'])
 @jwt_required()
-def get_teams_with_teamParam():
+def get_incomplete_teams_with_teamParam():
     data = {}
     data['status'] = 404
     current_user = student_users.find_one({"_id": ObjectId(current_identity['_id'])})
@@ -596,7 +578,7 @@ def get_teams_with_teamParam():
             data['message'] = "A team Parameter with id: '" + teamParam_id + "' does not exist"
         else:
             list_of_teams = []
-            for team in teams.find({'teamParamId' : ObjectId(teamParam_id)}):
+            for team in teams.find({'teamParamId' : ObjectId(teamParam_id)} , 'status' : 'incomplete'):
                 team['teamParamId'] = str(team['teamParamId'])
                 team['_id'] = str(team['_id'])
                 list_of_teams.append(team)
