@@ -4,67 +4,57 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.TMS.uni.seg3102final.AcceptNewStudents;
 import com.TMS.uni.seg3102final.JoinTeam;
 import com.TMS.uni.seg3102final.MainActivity;
-import com.TMS.uni.seg3102final.R;
-import com.TMS.uni.seg3102final.SetupParameters;
+import com.TMS.uni.seg3102final.VisualizeStudentTeams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
-public class JoinTeamTask extends AsyncTask<String, JSONObject, JSONObject> {
+public class TeamsInTeamParamTask extends AsyncTask<String, JSONObject, JSONObject> {
     Activity activity;
-    public JoinTeamTask(Activity activity) {
+    public TeamsInTeamParamTask(Activity activity) {
         this.activity = activity;
     }
 
     @Override
-    protected JSONObject doInBackground(String[] params) {
+    protected JSONObject doInBackground(String [] params) {
         try {
-            JSONObject credentials = new JSONObject();
-            ArrayList<String> list = new ArrayList<String>(Arrays.asList(params));
-            JSONArray jsArray = new JSONArray(list);
 
-            credentials.put("team_ids", jsArray);
+            String teamParam_id = params[0];
 
-            URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/joinTeams");
+            String charset = "UTF-8";
+            String query = String.format("teamParam_id=%s",
+                    URLEncoder.encode(teamParam_id, charset));
+
+
+            URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/teamsInTeamParam" + "?" + query);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(MainActivity.TIMEOUT);
             conn.setReadTimeout(MainActivity.TIMEOUT);
-
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept-Charset", charset);
 
             SharedPreferences settings = activity.getSharedPreferences("auth",
                     Context.MODE_PRIVATE);
             String token = settings.getString("access_token", "defaultvalue");
 
             conn.setRequestProperty("Authorization", "jwt " + token);
+            conn.setRequestProperty("teamParam_id", params[0]);
 
-            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-            writer.write(credentials.toString());
-            writer.flush();
-            writer.close();
             // Get response
             BufferedReader reader = null;
             if (conn.getResponseCode() / 100 == 2) {
@@ -79,7 +69,7 @@ public class JoinTeamTask extends AsyncTask<String, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
-        }  catch (ConnectException | SocketTimeoutException e) {
+        } catch (ConnectException | SocketTimeoutException e) {
             return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {
             return MainActivity.getObj("message", "The returned data was not in the correct format!");
@@ -92,13 +82,19 @@ public class JoinTeamTask extends AsyncTask<String, JSONObject, JSONObject> {
 
     protected void onPostExecute(JSONObject response) {
         try {
-            ((JoinTeam) activity).dismiss();
-            if(response.getString("status").equals("200"))
-                ((JoinTeam) activity).displaySuccessMessage(response.getString("message"));
-            else
-                ((JoinTeam) activity).displayMessage(response.getString("message"));
+            JoinTeam context = (JoinTeam) activity;
+            context.dismiss();
+            if (response.has("list_of_teams")) {
+                if (response.getJSONArray("list_of_teams").length() > 0) {
+                    context.showTeams(response.getJSONArray("list_of_teams"));
+                } else {
+                    Toast.makeText(activity.getApplicationContext(), "No teams found.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(activity.getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+            }
         } catch (JSONException e) {
-            ((JoinTeam) activity).displayMessage("UNEXPECTED ERROR");
+            Toast.makeText(activity.getApplicationContext(), "UNEXPECTED ERROR", Toast.LENGTH_LONG).show();
         }
     }
 }

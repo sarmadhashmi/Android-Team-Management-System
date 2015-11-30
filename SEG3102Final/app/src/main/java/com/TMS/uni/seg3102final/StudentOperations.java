@@ -46,9 +46,11 @@ public class StudentOperations extends AppCompatActivity {
 
                 if(clickedView.getText().equals("Create Team")) {
                     intent = new Intent(StudentOperations.this, SelectTeamParameters.class);
+                    intent.putExtra("nextPage", "Create Team");
                 }
                 else if(clickedView.getText().equals("Join Team")){
-                    intent = new Intent(StudentOperations.this, JoinTeam.class);
+                    intent = new Intent(StudentOperations.this, SelectTeamParameters.class);
+                    intent.putExtra("nextPage", "Join Team");
                 }
                 else if(clickedView.getText().equals("Accept New Students")){
                     intent = new Intent(StudentOperations.this, AcceptNewStudents.class);

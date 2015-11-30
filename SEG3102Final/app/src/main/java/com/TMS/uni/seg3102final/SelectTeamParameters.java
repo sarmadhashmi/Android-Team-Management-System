@@ -32,12 +32,20 @@ import java.util.Date;
 
 public class SelectTeamParameters extends AppCompatActivity {
     public ProgressDialog progress;
+    String nextPage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_team_parameters);
         progress = new ProgressDialog(this);
+        nextPage = getIntent().getStringExtra("nextPage");
+
         progress.setTitle("Create team");
+
+        if(nextPage.equals("Join Team"))
+            progress.setTitle("Join team");
+
         progress.setMessage("Retrieving list of team parameters...");
         progress.show();
         new AllTeamParametersTask(this).execute();
@@ -93,7 +101,16 @@ public class SelectTeamParameters extends AppCompatActivity {
                         e.printStackTrace();
                         return;
                     }
-                    Intent intent = new Intent(SelectTeamParameters.this, CreateTeam.class);
+
+                    Intent intent;
+
+                    if(nextPage.equals("Create Team")){
+                        intent = new Intent(SelectTeamParameters.this, CreateTeam.class);
+                    }
+                    else{
+                        intent = new Intent(SelectTeamParameters.this, JoinTeam.class);
+                    }
+
                     try {
                         intent.putExtra("teamParam_id", item.getId());
                         intent.putExtra("teamParam_min", item.getKey("minimumNumberOfStudents"));
