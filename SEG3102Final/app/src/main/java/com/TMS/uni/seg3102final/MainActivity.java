@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 import com.TMS.uni.seg3102final.tasks.LoginTask;
 import com.TMS.uni.seg3102final.tasks.RegisterTask;
 
@@ -32,7 +35,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
-    public static final String IP_ADDRESS = "10.0.2.2";
+    public static final String IP_ADDRESS = "10.0.3.2";
     public static final int TIMEOUT = 5000;
     public ProgressDialog progress;
     private boolean register = false;
@@ -224,5 +227,13 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Toast.makeText(a, "Logged out!", Toast.LENGTH_SHORT);
         a.startActivity(intent);
+    }
+
+    public static void checkInternetConnected(Activity activity) throws InternetConnectException {
+        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connectivityManager.getActiveNetworkInfo();
+        if (wifi == null || !wifi.isConnected()) {
+            throw new InternetConnectException();
+        }
     }
 }
