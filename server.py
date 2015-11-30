@@ -578,7 +578,7 @@ def get_incomplete_teams_with_teamParam():
             data['message'] = "A team Parameter with id: '" + teamParam_id + "' does not exist"
         else:
             list_of_teams = []
-            for team in teams.find({'teamParamId' : ObjectId(teamParam_id)} , 'status' : 'incomplete'):
+            for team in teams.find({'teamParamId' : ObjectId(teamParam_id) , 'status' : 'incomplete' }):
                 team['teamParamId'] = str(team['teamParamId'])
                 team['_id'] = str(team['_id'])
                 list_of_teams.append(team)
