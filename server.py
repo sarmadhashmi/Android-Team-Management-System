@@ -556,6 +556,12 @@ def accept_members():
                 data['message'] = "Maximum number of students is exceeded if all selected students are added to team"
             else:
                 members = team['teamMembers'] + list_of_usernames
+                requests = team['requestedMembers']
+                #Remove the members in the requests that are going to be added
+                for member in members:
+                    if member in requests:
+                        requests.remove(member)
+
                 if len(members) == max_students:
                     status = "complete"
                 else:
@@ -565,7 +571,7 @@ def accept_members():
                         "_id": team['_id']
                     },
                     {
-                        "$set": {"teamMembers": members, "status": status}
+                        "$set": {"teamMembers": members, "status": status, "requestedMembers" : requests}
                     })
                 data['message'] = "Successfully added selected users to team"
                 data['status'] = 200

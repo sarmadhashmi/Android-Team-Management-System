@@ -21,7 +21,7 @@ def dummy_data():
                             {
                             "username": "stest",
                             "password": server.encrypt("test"),
-                            "email" : "snake@uottawa.ca",
+                            "email" : "muraad@uottawa.ca",
                             "firstName" : "Muraad",
                             "lastName" : "Hared",
                             "programOfStudy" : "SEG"
@@ -32,19 +32,121 @@ def dummy_data():
                             {
                             "username": "stest2",
                             "password": server.encrypt("test"),
-                            "email" : "snake2@uottawa.ca",
+                            "email" : "sarmad@uottawa.ca",
                             "firstName" : "Sarmad",
                             "lastName" : "Hashmi",
                             "programOfStudy" : "SEG"
                             }
                             , True)
+    student_users.replace_one({"username" : "stest3"},
+                            {
+                            "username": "stest3",
+                            "password": server.encrypt("test"),
+                            "email" : "salman@uottawa.ca",
+                            "firstName" : "Salman",
+                            "lastName" : "Rana",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest4"},
+                            {
+                            "username": "stest4",
+                            "password": server.encrypt("test"),
+                            "email" : "janac@uottawa.ca",
+                            "firstName" : "Janac",
+                            "lastName" : "Meena",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest5"},
+                            {
+                            "username": "stest5",
+                            "password": server.encrypt("test"),
+                            "email" : "james@uottawa.ca",
+                            "firstName" : "James",
+                            "lastName" : "Bond",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest6"},
+                            {
+                            "username": "stest6",
+                            "password": server.encrypt("test"),
+                            "email" : "bernard@uottawa.ca",
+                            "firstName" : "Bernard",
+                            "lastName" : "Jackson",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest7"},
+                            {
+                            "username": "stest7",
+                            "password": server.encrypt("test"),
+                            "email" : "barry@uottawa.ca",
+                            "firstName" : "Barry",
+                            "lastName" : "Allen",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest8"},
+                            {
+                            "username": "stest8",
+                            "password": server.encrypt("test"),
+                            "email" : "bobby@uottawa.ca",
+                            "firstName" : "Bobby",
+                            "lastName" : "Builder",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest9"},
+                            {
+                            "username": "stest9",
+                            "password": server.encrypt("test"),
+                            "email" : "peter@uottawa.ca",
+                            "firstName" : "Peter",
+                            "lastName" : "Parker",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest10"},
+                            {
+                            "username": "stest10",
+                            "password": server.encrypt("test"),
+                            "email" : "joe@uottawa.ca",
+                            "firstName" : "Joe",
+                            "lastName" : "Johnson",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    student_users.replace_one({"username" : "stest11"},
+                            {
+                            "username": "stest11",
+                            "password": server.encrypt("test"),
+                            "email" : "tim@uottawa.ca",
+                            "firstName" : "Tim",
+                            "lastName" : "Turner",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+    
     student_users.replace_one({"username" : "reqTest"},
                             {
                             "username": "reqTest",
                             "password": server.encrypt("test"),
                             "email" : "snake2@uottawa.ca",
-                            "firstName" : "Salman",
-                            "lastName" : "Rana",
+                            "firstName" : "Johnny",
+                            "lastName" : "Razor",
+                            "programOfStudy" : "SEG"
+                            }
+                            , True)
+
+    student_users.replace_one({"username" : "reqTest2"},
+                            {
+                            "username": "reqTest2",
+                            "password": server.encrypt("test"),
+                            "email" : "snake2@uottawa.ca",
+                            "firstName" : "Samantha",
+                            "lastName" : "Melo",
                             "programOfStudy" : "SEG"
                             }
                             , True)
@@ -126,61 +228,92 @@ def dummy_data():
     team_params_2 = team_params.find_one({"courseId": course_3102['_id']})
     teams.replace_one(
                 {
-                    "teamName" : "SnakeFour"
+                    "teamName" : "SEG Four"
                 },
                 {
                     "teamParamId" : team_params_1['_id'],
-                    "teamName" : "SnakeFour",
+                    "teamName" : "SEG Four",
                     "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "complete",
                     "teamSize" : 4,
-                    "teamMembers": ["Salman", "Janac", "stest", "Sarmad"],
-                    "liason" : "stest",
-                    "requestedMembers" : ["Muraad"]                        
-                }, True)
-    
-    teams.replace_one(
-                {
-                    "teamName" : "NoRequestedMembers"
-                },
-                {
-                    "teamParamId" : team_params_1['_id'],
-                    "teamName" : "NoRequestedMembers",
-                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-                    "status" : "incomplete",
-                    "teamSize" : 3,
-                    "teamMembers": ["stest", "stest2", "Janac"],
-                    "liason" : "stest",
+                    "teamMembers": ["stest2", "stest3", "stest4", "stest5"],
+                    "liason" : "stest2",
                     "requestedMembers" : []                        
                 }, True)
     
     teams.replace_one(
                 {
-                    "teamName" : "OneMember"
+                    "teamName" : "Binary Team"
                 },
                 {
-                    "teamParamId" : team_params_2['_id'],
-                    "teamName" : "OneMember",
+                    "teamParamId" : team_params_1['_id'],
+                    "teamName" : "Binary Team",
                     "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "incomplete",
-                    "teamSize" : 1,
-                    "teamMembers": ["stest"],
+                    "teamSize" : 2,
+                    "teamMembers": ["stest", "stest6"],
                     "liason" : "stest",
-                    "requestedMembers" : ["reqTest"]                        
+                    "requestedMembers" : ["stest7","stest8","stest9"]                        
                 }, True)
 
     teams.replace_one(
                 {
-                    "teamName" : "TwoMembers"
+                    "teamName" : "COOP Team"
+                },
+                {
+                    "teamParamId" : team_params_1['_id'],
+                    "teamName" : "COOP Team",
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                    "status" : "incomplete",
+                    "teamSize" : 2,
+                    "teamMembers": ["stest10", "stest11"],
+                    "liason" : "stest10",
+                    "requestedMembers" : []                        
+                }, True)
+    
+    
+    teams.replace_one(
+                {
+                    "teamName" : "Best Team"
                 },
                 {
                     "teamParamId" : team_params_2['_id'],
-                    "teamName" : "TwoMembers",
+                    "teamName" : "Best Team",
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                    "status" : "complete",
+                    "teamSize" : 4,
+                    "teamMembers": ["stest2", "stest10", "stest11", "stest9"],
+                    "liason" : "stest2",
+                    "requestedMembers" : []                        
+                }, True)
+    
+    teams.replace_one(
+                {
+                    "teamName" : "Two Squad"
+                },
+                {
+                    "teamParamId" : team_params_2['_id'],
+                    "teamName" : "Two Squad",
                     "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
                     "status" : "incomplete",
-                    "teamSize" : 1,
-                    "teamMembers": ["stest", "stest2"],
+                    "teamSize" : 2,
+                    "teamMembers": ["stest", "stest8"],
                     "liason" : "stest",
-                    "requestedMembers" : ["reqTest"]                        
+                    "requestedMembers" : ["stest3","stest4","stest5"]                        
+                }, True)
+
+    teams.replace_one(
+                {
+                    "teamName" : "Incomplete Fellows"
+                },
+                {
+                    "teamParamId" : team_params_2['_id'],
+                    "teamName" : "Incomplete Fellows",
+                    "dateOfCreation" : datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                    "status" : "incomplete",
+                    "teamSize" : 2,
+                    "teamMembers": ["stest6", "stest7"],
+                    "liason" : "stest6",
+                    "requestedMembers" : []                        
                 }, True)
     
