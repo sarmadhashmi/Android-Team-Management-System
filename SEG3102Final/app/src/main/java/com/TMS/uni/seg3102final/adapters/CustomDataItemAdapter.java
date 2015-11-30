@@ -15,8 +15,11 @@ import com.TMS.uni.seg3102final.AcceptNewStudents;
 import com.TMS.uni.seg3102final.Models.ListItemModel;
 import com.TMS.uni.seg3102final.R;
 
+import java.util.HashMap;
+
 public class CustomDataItemAdapter extends ArrayAdapter{
 
+    public static HashMap<String, Boolean> selected;
     ListItemModel[] modelItems = null;
     Context context;
 
@@ -46,11 +49,11 @@ public class CustomDataItemAdapter extends ArrayAdapter{
 
                 if(cb.isChecked())
                 {
-                    AcceptNewStudents.selectedRequests.put(label, true);
+                    selected.put(label, true);
                 }
                 else
                 {
-                    AcceptNewStudents.selectedRequests.put(label, false);
+                    selected.put(label, false);
                 }
             }
         });

@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.TMS.uni.seg3102final.CreateTeam;
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.SetupParameters;
+import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +48,7 @@ public class CreateTeamTask extends AsyncTask<Void, JSONObject, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... params) {
         try {
+            MainActivity.checkInternetConnected(this.activity);
             JSONObject credentials = new JSONObject();
             credentials.put("team_param_id", team_param_id);
             credentials.put("team_name", team_name);
@@ -82,6 +84,8 @@ public class CreateTeamTask extends AsyncTask<Void, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
+        } catch (InternetConnectException e) {
+            return MainActivity.getObj("message", "You are not connected to the internet!!");
         } catch (ConnectException | SocketTimeoutException e) {
             return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {

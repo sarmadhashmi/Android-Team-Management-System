@@ -42,7 +42,7 @@ public class AcceptNewStudents extends AppCompatActivity {
     ArrayList<ListItemModel> memListOptions;
     CustomDataItemAdapter adapter;
     String selectedTeam;
-    public static HashMap<String, Boolean> selectedRequests;
+
 
     HashMap<String, ArrayList<String>> teamMap;
     HashMap<String, String> teamIdMap;
@@ -53,7 +53,7 @@ public class AcceptNewStudents extends AppCompatActivity {
         setContentView(R.layout.activity_accept_new_students);
         teamMap = new HashMap<String, ArrayList<String>>();
         teamIdMap = new HashMap<String, String>();
-        selectedRequests = new HashMap<String, Boolean>();
+        CustomDataItemAdapter.selected = new HashMap<String, Boolean>();
         lv = (ListView) findViewById(R.id.listView1);
 
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -170,7 +170,7 @@ public class AcceptNewStudents extends AppCompatActivity {
         ArrayList<String> list = new ArrayList<String>();
         list.add(teamIdMap.get(selectedTeam));
 
-        for (Map.Entry<String, Boolean> entry : selectedRequests.entrySet()) {
+        for (Map.Entry<String, Boolean> entry : CustomDataItemAdapter.selected.entrySet()) {
             String key = entry.getKey();
             Boolean value = entry.getValue();
 
@@ -195,10 +195,10 @@ public class AcceptNewStudents extends AppCompatActivity {
        memListOptions = new ArrayList<ListItemModel>();
 
         reqList = teamMap.get(team);
-        selectedRequests = new HashMap<String, Boolean>();
+        CustomDataItemAdapter.selected = new HashMap<String, Boolean>();
         for (String request : reqList) {
             memListOptions.add(new ListItemModel(request, 0));
-            selectedRequests.put(request,false);
+            CustomDataItemAdapter.selected.put(request,false);
         }
 
         if(memListOptions.size() == 0)

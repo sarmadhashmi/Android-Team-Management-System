@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.R;
+import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
     @Override
     protected JSONObject doInBackground(String[] params) {
         try {
+            MainActivity.checkInternetConnected(this.activity);
             String username = params[0];
             String password = params[1];
             JSONObject credentials = new JSONObject();
@@ -68,6 +70,8 @@ public class LoginTask extends AsyncTask<String, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
+        } catch (InternetConnectException e) {
+            return MainActivity.getObj("message", "You are not connected to the internet!!");
         } catch (ConnectException | SocketTimeoutException e) {
             return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {
