@@ -439,20 +439,31 @@ def join_teams():
             if user is None:
                 user = instructor_users.find_one({"_id" : current_identity['_id']})
             username = user['username']
+
+            #Check if user already in teams/user already requested teams
+            invalid_team_selection = False
             for team in team_ids:
                 current_team = teams.find_one({"_id" : ObjectId(team)})
-                requests = current_team['requestedMembers']
-                if username not in requests and username not in current_team['teamMembers']:
+                if username in current_team['requestedMembers'] or username in current_team['teamMembers']:
+                    invalid_team_selection = True
+                    break
+
+            if invalid_team_selection:
+                data['message'] = "You are already a member/requestedMember of one or more teams selected"
+            else:
+                for team in team_ids:
+                    current_team = teams.find_one({"_id" : ObjectId(team)})
+                    requests = current_team['requestedMembers']
                     requests.append(username)
-                teams.update_one(
-                    {
-                        "_id": current_team['_id']
-                    },
-                    {
-                        "$set": {"requestedMembers": requests}
-                    })
-            data['status'] = 200
-            data['message'] = 'Successfully joined teams'
+                    teams.update_one(
+                        {
+                            "_id": current_team['_id']
+                        },
+                        {
+                            "$set": {"requestedMembers": requests}
+                        })
+                data['status'] = 200
+                data['message'] = 'Successfully joined teams'
     resp = jsonify(data)
     resp.status_code = data['status']
     return resp
