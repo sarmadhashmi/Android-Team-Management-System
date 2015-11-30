@@ -44,8 +44,6 @@ public class StudentOperations extends AppCompatActivity {
                 TextView clickedView = (TextView) view;
                 Intent intent = null;
 
-                //Toast.makeText(StudentOperations.this, "Item with id [" + id + "] - Position [" + position + "] - Planet [" + clickedView.getText() + "]", Toast.LENGTH_SHORT).show();
-
                 if(clickedView.getText().equals("Create Team")) {
                     intent = new Intent(StudentOperations.this, SelectTeamParameters.class);
                 }
