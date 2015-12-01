@@ -582,7 +582,7 @@ def accept_members():
     return resp
 
 #Return the incomplete teams with the specified team parameter 
-@app.route('/incompleteTeamsInTeamParam', methods=['GET'])
+@app.route('/teamsInTeamParam', methods=['GET'])
 @jwt_required()
 def get_incomplete_teams_with_teamParam():
     data = {}
