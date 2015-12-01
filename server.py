@@ -256,9 +256,17 @@ def get_team_params():
     data = {}
     data['status'] = 200
     teamParams = []
+    member_of_team = False
+    current_user = student_users.find_one({"_id" : current_identity['_id']})
+    if current_user is None:
+        current_user = instructor_users.find_one({"_id" : current_identity['_id']})
     for row in team_params.find():
         course = courses.find_one({'_id': row['courseId']})
-        instructor = instructor_users.find_one({'_id': row['instructorId']})        
+        instructor = instructor_users.find_one({'_id': row['instructorId']})
+        #search if user is a part of a team within the team param
+        for team in teams.find({"teamParamId" : row['_id']}):
+            if current_user['username'] in team['teamMembers']:
+                member_of_team = True      
         obj = {
             "_id": str(row['_id']),
             "courseId": str(course['_id']),
@@ -268,9 +276,10 @@ def get_team_params():
             "instructor_name": instructor['firstName'] + ' ' + instructor['lastName'],
             "deadline": row['deadline'],
             "minimumNumberOfStudents": row['minimumNumberOfStudents'],
-            "maximumNumberOfStudents": row['maximumNumberOfStudents']           
+            "maximumNumberOfStudents": row['maximumNumberOfStudents'],         
         }
-        teamParams.append(obj)        
+        if not member_of_team:
+            teamParams.append(obj)        
     data['teamParams'] = teamParams
     resp = jsonify(data)
     resp.status_code = data['status']
