@@ -214,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
         }else if(type.equals("student")) {
             intent = new Intent(this, StudentOperations.class);
             intent.putExtra("isLiason", false);
-
             editor.putBoolean("isLiason", false);
             editor.commit();
             startActivity(intent);

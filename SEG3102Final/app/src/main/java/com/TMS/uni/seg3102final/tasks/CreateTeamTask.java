@@ -100,9 +100,16 @@ public class CreateTeamTask extends AsyncTask<Void, JSONObject, JSONObject> {
         try {
             if(response.has("message"))
             {
-                if(response.getString("status").equals("200"))
+                if(response.getString("status").equals("200")) {
+                    SharedPreferences settings = activity.getSharedPreferences("USER",
+                            Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean("isLiason", true);
+                    editor.commit();
+
                     ((CreateTeam) activity).displaySuccessMessage(response.getString("message"));
-                else
+                }
+                    else
                     ((CreateTeam) activity).displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
