@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.AcceptNewStudents;
 import com.TMS.uni.seg3102final.MainActivity;
-import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +31,6 @@ public class GetLiasionTeamsTask extends AsyncTask<String, JSONObject, JSONObjec
     @Override
     protected JSONObject doInBackground(String[] params) {
         try {
-            MainActivity.checkInternetConnected(this.activity);
             URL url = new URL("http://" + MainActivity.IP_ADDRESS + ":3001/liasionTeams");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(MainActivity.TIMEOUT);
@@ -59,8 +57,6 @@ public class GetLiasionTeamsTask extends AsyncTask<String, JSONObject, JSONObjec
             }
             reader.close();
             return new JSONObject(str.toString());
-        } catch (InternetConnectException e) {
-            return MainActivity.getObj("message", "You are not connected to the internet!!");
         } catch (ConnectException | SocketTimeoutException e) {
             return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {

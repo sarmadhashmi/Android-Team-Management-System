@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <DatePicker
+            android:id="@+id/deadline_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </DatePicker>
+
+        <TimePicker
+            android:id="@+id/deadline_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </TimePicker>
+
+        <Button
+            android:layout_gravity="center_horizontal"
+            android:onClick="closeDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK" />
+    </LinearLayout>
+</ScrollView>

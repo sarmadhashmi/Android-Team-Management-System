@@ -26,7 +26,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 import com.TMS.uni.seg3102final.tasks.LoginTask;
 import com.TMS.uni.seg3102final.tasks.RegisterTask;
 
@@ -238,13 +237,5 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Toast.makeText(a, "Logged out!", Toast.LENGTH_SHORT);
         a.startActivity(intent);
-    }
-
-    public static void checkInternetConnected(Activity activity) throws InternetConnectException {
-        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connectivityManager.getActiveNetworkInfo();
-        if (wifi == null || !wifi.isConnected()) {
-            throw new InternetConnectException();
-        }
     }
 }

@@ -13,7 +13,6 @@ import com.TMS.uni.seg3102final.JoinTeam;
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.R;
 import com.TMS.uni.seg3102final.SetupParameters;
-import com.TMS.uni.seg3102final.exceptions.InternetConnectException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +40,6 @@ public class JoinTeamTask extends AsyncTask<String, JSONObject, JSONObject> {
     @Override
     protected JSONObject doInBackground(String[] params) {
         try {
-            MainActivity.checkInternetConnected(this.activity);
             JSONObject credentials = new JSONObject();
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(params));
             JSONArray jsArray = new JSONArray(list);
@@ -81,8 +79,6 @@ public class JoinTeamTask extends AsyncTask<String, JSONObject, JSONObject> {
             }
             reader.close();
             return new JSONObject(str.toString());
-        } catch (InternetConnectException e) {
-            return MainActivity.getObj("message", "You are not connected to the internet!!");
         } catch (ConnectException | SocketTimeoutException e) {
             return MainActivity.getObj("message", "Seems like the server is down or cannot be reached for some reason at this moment!");
         } catch (JSONException e) {
