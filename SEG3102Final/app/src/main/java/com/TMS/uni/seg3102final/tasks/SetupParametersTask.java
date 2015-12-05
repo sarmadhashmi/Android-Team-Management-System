@@ -91,11 +91,19 @@ public class SetupParametersTask extends AsyncTask<String, JSONObject, JSONObjec
     }
 
     protected void onPostExecute(JSONObject response) {
+        ((SetupParameters) activity).dismiss();
+
         try {
-            ((SetupParameters) activity).dismiss();
-            Toast.makeText(activity.getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+            if(response.has("message"))
+            {
+                if(response.getString("status").equals("200"))
+                    ((SetupParameters) activity).displaySuccessMessage(response.getString("message"));
+                else
+                    ((SetupParameters) activity).displayMessage(response.getString("message"));
+            }
         } catch (JSONException e) {
-            e.printStackTrace();
+            ((SetupParameters) activity).displayMessage("Unexpected Error");
+
         }
     }
 }

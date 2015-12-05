@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.TMS.uni.seg3102final.CreateTeam;
+import com.TMS.uni.seg3102final.JoinTeam;
 import com.TMS.uni.seg3102final.MainActivity;
 import com.TMS.uni.seg3102final.SetupParameters;
 
@@ -94,11 +95,18 @@ public class CreateTeamTask extends AsyncTask<Void, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
+        ((CreateTeam) activity).dismiss();
+
         try {
-            ((CreateTeam) activity).dismiss();
-            Toast.makeText(activity.getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+            if(response.has("message"))
+            {
+                if(response.getString("status").equals("200"))
+                    ((CreateTeam) activity).displaySuccessMessage(response.getString("message"));
+                else
+                    ((CreateTeam) activity).displayMessage(response.getString("message"));
+            }
         } catch (JSONException e) {
-            e.printStackTrace();
+            ((CreateTeam) activity).displayMessage("Unexpected Error");
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.TMS.uni.seg3102final;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +47,56 @@ public class SetupParameters extends AppCompatActivity {
     public void dismiss() {
         progress.dismiss();
     }
+
+
+    public void displayMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        // alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+    public void displaySuccessMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        // alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
 
     public void closeDialog(View v) {
         DatePicker date = (DatePicker) dialog.findViewById(R.id.deadline_date);

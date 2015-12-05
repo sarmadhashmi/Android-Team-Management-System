@@ -118,7 +118,17 @@ public class JoinTeam extends AppCompatActivity {
         // Setting OK Button
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+
+                Intent intent;
+
+                SharedPreferences settings = JoinTeam.this.getSharedPreferences("USER",
+                        Context.MODE_PRIVATE);
+                boolean isLiason = settings.getBoolean("isLiason", false);
+                intent = new Intent(JoinTeam.this, StudentOperations.class);
+                intent.putExtra("isLiason", false);
+                startActivity(intent);
+
+
             }
         });
 

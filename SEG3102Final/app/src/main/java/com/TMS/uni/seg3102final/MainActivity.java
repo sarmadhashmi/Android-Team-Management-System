@@ -34,7 +34,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     JSONObject response;
-    public static final String IP_ADDRESS = "10.0.3.2";
+    public static final String IP_ADDRESS = "10.0.2.2";
     public static final int TIMEOUT = 5000;
     public ProgressDialog progress;
     private boolean register = false;
@@ -204,14 +204,24 @@ public class MainActivity extends AppCompatActivity {
     public void loadOperations(String type) {
         Intent intent;
 
+        SharedPreferences settings = getSharedPreferences("USER",
+                Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = settings.edit();
+
         if(type.equals("instructor")) {
             startActivity(new Intent(this, InstructorOperations.class));
         }else if(type.equals("student")) {
             intent = new Intent(this, StudentOperations.class);
             intent.putExtra("isLiason", false);
+
+            editor.putBoolean("isLiason", false);
+            editor.commit();
             startActivity(intent);
         }else if(type.equals("liason")) {
             intent = new Intent(this, StudentOperations.class);
+            editor.putBoolean("isLiason", true);
+            editor.commit();
             intent.putExtra("isLiason", true);
             startActivity(intent);
         }

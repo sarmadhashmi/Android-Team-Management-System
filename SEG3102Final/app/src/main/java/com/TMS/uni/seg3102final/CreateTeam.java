@@ -1,6 +1,8 @@
 package com.TMS.uni.seg3102final;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,6 +83,58 @@ public class CreateTeam extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Added " + item.getText() + " to team.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void displayMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        // alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+    public void displaySuccessMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        // alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent;
+                intent = new Intent(CreateTeam.this, StudentOperations.class);
+                intent.putExtra("isLiason", true);
+                startActivity(intent);
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
 
     public void removeMember(DBItem item) {
         Spinner dropdown = (Spinner) findViewById(R.id.students);
