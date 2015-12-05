@@ -50,7 +50,9 @@ public class RegisterTask extends AsyncTask<String, JSONObject, JSONObject> {
             registerationInformation.put("first_name", f_name);
             registerationInformation.put("last_name", l_name);
             registerationInformation.put("user_type", userType);
-            registerationInformation.put("programOfStudy", pgmStudy);
+
+            if(pgmStudy != null)
+                registerationInformation.put("programOfStudy", pgmStudy);
 
             System.out.println(registerationInformation.toString(4));
 

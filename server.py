@@ -32,7 +32,7 @@ def Date(fmt='%d/%m/%Y %H:%M:%S'):
 def validate_email(email):
      """Validate email."""
      if not "@" in email:
-         raise Invalid("This email is invalid.")
+         raise Invalid("The value entered is invalid")
      return email
 
 #Define Schema

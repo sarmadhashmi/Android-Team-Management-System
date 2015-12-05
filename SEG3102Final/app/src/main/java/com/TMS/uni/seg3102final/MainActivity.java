@@ -95,14 +95,24 @@ public class MainActivity extends AppCompatActivity {
         EditText lastName = (EditText) findViewById(R.id.lastName);
         EditText pgmStudy = (EditText) findViewById(R.id.programOfStudy);
 
+
         String radioValue;
+        String programOfStudy;
+
 
         try{
-        radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
+            radioValue = ((RadioButton)findViewById(rg.getCheckedRadioButtonId())).getText().toString();
         }catch(Exception e){
             radioValue = "null";
         }
-        String[] params = {username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString(), radioValue, pgmStudy.getText().toString()};
+
+        if (radioValue.equals("Student"))
+        {
+            programOfStudy = pgmStudy.getText().toString();
+        }else
+            programOfStudy = null;
+
+        String[] params = {username.getText().toString(), password.getText().toString(),email.getText().toString(),firstName.getText().toString(),lastName.getText().toString(), radioValue, programOfStudy};
 
         progress.setTitle("Register");
         progress.setMessage("Registering Please Wait...");
@@ -141,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)findViewById (R.id.email)).setText("");
         ((TextView)findViewById (R.id.firstName)).setText("");
         ((TextView)findViewById (R.id.lastName)).setText("");
+        ((TextView)findViewById (R.id.programOfStudy)).setText("");
     }
 
     public void invert(View view) {
