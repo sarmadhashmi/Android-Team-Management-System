@@ -76,14 +76,6 @@ public class StudentTeamsTask extends AsyncTask<Void, JSONObject, JSONObject> {
     protected void onPostExecute(JSONObject response) {
 
         try {
-            System.out.println(response.toString(4));
-        }catch (Exception e){
-            System.out.println("NOTHING");
-
-        }
-
-
-        try {
             VisualizeStudentTeams context = (VisualizeStudentTeams) activity;
             context.dismiss();
             if (response.has("teams")) {

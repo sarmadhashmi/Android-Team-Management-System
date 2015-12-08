@@ -74,7 +74,7 @@ public class VisualizeStudentTeams extends AppCompatActivity {
                     intent.putExtra("teamSize", item.getKey("teamSize"));
                     intent.putExtra("liason", item.getKey("liason"));
                     intent.putExtra("requestedMembers", item.JSONArrayToStringArray("requestedMembers"));
-                    System.out.println("People in teams:******  " + item.JSONArrayToStringArray("teamMembers"));
+                    System.out.println("REquesTED MEMEBER S ******: " + item.JSONArrayToStringArray("requestedMembers"));
                     intent.putExtra("teamMembers", item.JSONArrayToStringArray("teamMembers"));
                 } catch (JSONException e) {
                     e.printStackTrace();
