@@ -147,9 +147,9 @@ def register():
         if conforms_to_schema:
             #Check if user already exists
             if student_users.find_one({"username": username}):                    
-                data['message'] = "Student with that username already exists"
+                data['message'] = "A User with that username already exists"
             elif instructor_users.find_one({"username": username}):                    
-                data['message'] = "Instructor with that username already exists"
+                data['message'] = "A User with that username already exists"
             else:         
                 if(user_type.strip().lower() == "student"):
                     if 'programOfStudy' not in request.json:
@@ -279,7 +279,11 @@ def get_team_params():
             "maximumNumberOfStudents": row['maximumNumberOfStudents'],         
         }
         if not member_of_team:
-            teamParams.append(obj)        
+            teamParams.append(obj) 
+    if len(teamParams) == 0:
+        data['message'] = "You are already a member of a team in each team Parameter"   
+    else:
+        data['message'] = "Data successfully returned"    
     data['teamParams'] = teamParams
     resp = jsonify(data)
     resp.status_code = data['status']
