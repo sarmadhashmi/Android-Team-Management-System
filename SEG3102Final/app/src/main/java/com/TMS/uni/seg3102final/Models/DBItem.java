@@ -45,7 +45,7 @@ public class DBItem {
         JSONArray arr = obj.getJSONArray(key);
         ArrayList<String> strings = new ArrayList<String>();
         try {
-            for (int i = 0; i < arr.length() - 1; i++) {
+            for (int i = 0; i < arr.length(); i++) {
                 strings.add(arr.getString(i));
             }
         } catch (Exception e) {

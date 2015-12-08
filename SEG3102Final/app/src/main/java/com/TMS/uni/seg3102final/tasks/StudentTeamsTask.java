@@ -74,6 +74,15 @@ public class StudentTeamsTask extends AsyncTask<Void, JSONObject, JSONObject> {
     }
 
     protected void onPostExecute(JSONObject response) {
+
+        try {
+            System.out.println(response.toString(4));
+        }catch (Exception e){
+            System.out.println("NOTHING");
+
+        }
+
+
         try {
             VisualizeStudentTeams context = (VisualizeStudentTeams) activity;
             context.dismiss();
@@ -87,7 +96,7 @@ public class StudentTeamsTask extends AsyncTask<Void, JSONObject, JSONObject> {
                 Toast.makeText(activity.getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Toast.makeText(activity.getApplicationContext(), "UNEXPECTED ERROR", Toast.LENGTH_LONG).show();
         }
     }
 }

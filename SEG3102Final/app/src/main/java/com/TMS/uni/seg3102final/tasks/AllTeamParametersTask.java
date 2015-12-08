@@ -77,9 +77,9 @@ public class AllTeamParametersTask extends AsyncTask<Void, JSONObject, JSONObjec
     protected void onPostExecute(JSONObject response) {
 
         SelectTeamParameters context = (SelectTeamParameters) activity;
+        context.dismiss();
 
         try {
-            context.dismiss();
             if (response.has("teamParams")) {
                 if (response.getJSONArray("teamParams").length() > 0) {
                     context.showTeamParams(response.getJSONArray("teamParams"));
@@ -90,7 +90,7 @@ public class AllTeamParametersTask extends AsyncTask<Void, JSONObject, JSONObjec
                 context.displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
-            context.displayMessage("Unexoected ERROR");
+            context.displayMessage("Unexpected ERROR");
         }
     }
 }

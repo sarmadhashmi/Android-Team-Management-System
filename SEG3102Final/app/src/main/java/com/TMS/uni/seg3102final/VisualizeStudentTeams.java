@@ -51,6 +51,9 @@ public class VisualizeStudentTeams extends AppCompatActivity {
     public void showStudentTeams(JSONArray teams) {
         ListView listView = (ListView) findViewById(R.id.student_teams);
         ArrayList<DBItem> items = new ArrayList<DBItem>();
+
+
+
         for (int i = 0; i < teams.length(); i++) {
             try {
                 items.add(new DBItem(teams.getJSONObject(i), "team"));
@@ -71,6 +74,7 @@ public class VisualizeStudentTeams extends AppCompatActivity {
                     intent.putExtra("teamSize", item.getKey("teamSize"));
                     intent.putExtra("liason", item.getKey("liason"));
                     intent.putExtra("requestedMembers", item.JSONArrayToStringArray("requestedMembers"));
+                    System.out.println("People in teams:******  " + item.JSONArrayToStringArray("teamMembers"));
                     intent.putExtra("teamMembers", item.JSONArrayToStringArray("teamMembers"));
                 } catch (JSONException e) {
                     e.printStackTrace();
