@@ -261,6 +261,7 @@ def get_team_params():
     if current_user is None:
         current_user = instructor_users.find_one({"_id" : current_identity['_id']})
     for row in team_params.find():
+        member_of_team = False
         course = courses.find_one({'_id': row['courseId']})
         instructor = instructor_users.find_one({'_id': row['instructorId']})
         #search if user is a part of a team within the team param
