@@ -1,7 +1,11 @@
 package com.TMS.uni.seg3102final;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -76,6 +80,32 @@ public class SelectTeamParameters extends AppCompatActivity {
     public void dismiss() {
         progress.dismiss();
     }
+
+    public void displayMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                this).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle("Information");
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting Icon to Dialog
+        // alertDialog.setIcon(R.drawable.tick);
+
+        // Setting OK Button
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
 
     public void showTeamParams(JSONArray teamParams) {
         try {

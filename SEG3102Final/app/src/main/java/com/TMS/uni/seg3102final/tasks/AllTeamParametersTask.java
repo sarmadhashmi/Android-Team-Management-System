@@ -75,20 +75,22 @@ public class AllTeamParametersTask extends AsyncTask<Void, JSONObject, JSONObjec
     }
 
     protected void onPostExecute(JSONObject response) {
+
+        SelectTeamParameters context = (SelectTeamParameters) activity;
+
         try {
-            SelectTeamParameters context = (SelectTeamParameters) activity;
             context.dismiss();
             if (response.has("teamParams")) {
                 if (response.getJSONArray("teamParams").length() > 0) {
                     context.showTeamParams(response.getJSONArray("teamParams"));
                 } else {
-                    Toast.makeText(activity.getApplicationContext(), "No team parameters have been created by an instructor yet.", Toast.LENGTH_SHORT).show();
+                    context.displayMessage(response.getString("message"));
                 }
             } else {
-                Toast.makeText(activity.getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+                context.displayMessage(response.getString("message"));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            context.displayMessage("Unexoected ERROR");
         }
     }
 }
