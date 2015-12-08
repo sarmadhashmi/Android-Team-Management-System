@@ -206,8 +206,8 @@ def create_team_params():
 
     if valid_format:
         if user:
-                course_code = request.json['course_code']
-                course_section = request.json['course_section']
+                course_code = request.json['course_code'].upper()
+                course_section = request.json['course_section'].upper()
                 minimum_number_of_students = request.json['minimum_num_students']
                 maximum_number_of_students = request.json['maximum_num_students'] 
                 deadline = request.json['deadline']
@@ -493,8 +493,9 @@ def view_requested_members():
     if current_user:
         if 'team_id' in request.args:
             team_id = request.args['team_id']
-            invalid_team_id= invalid_object(team_id, teams)[0]
-
+            team_validation = invalid_object(team_id, teams)
+            invalid_team_id= team_validation[0]
+            team = team_validation[0]
             if invalid_team_id:
                 data['message'] = "A team with id: " + team_id + " does not exist"
             elif current_user['username'] != team['liason']:
@@ -578,7 +579,7 @@ def accept_members():
                         "_id": team['_id']
                     },
                     {
-                        "$set": {"teamMembers": members, "status": status, "requestedMembers" : requests}
+                        "$set": {"teamMembers": members, "status": status, "requestedMembers" : requests, "teamSize" : len(members)}
                     })
                 data['message'] = "Successfully added selected users to team"
                 data['status'] = 200
