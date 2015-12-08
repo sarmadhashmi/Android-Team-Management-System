@@ -104,7 +104,7 @@ public class SetupParameters extends AppCompatActivity {
         EditText deadline = (EditText) findViewById(R.id.deadline);
         // dd/MM/yyyy HH:MM:00
         String day = "" + date.getDayOfMonth();
-        String month = "" + date.getMonth();
+        String month = "" + (date.getMonth() + 1);
         String year = "" + date.getYear();
         String hour = "" + time.getCurrentHour();
         String minute = "" + time.getCurrentMinute();
